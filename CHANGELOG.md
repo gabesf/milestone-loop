@@ -15,7 +15,9 @@ All notable changes to this project are listed here. Versions follow
   line with the user's processes, re-runnable geometry scripts as the
   source of truth, interference and clearance checks, options sheets for
   design decisions, fabrication files only after preview approval, serial
-  groups.
+  groups. Simulation picked by the question (FEM in FreeCAD for strength,
+  MuJoCo for mechanisms), scripted in `sim/`, validated against a hand
+  calculation, checked for convergence.
 - `stack-electronics`: PlatformIO, a probe firmware first, one pin header,
   host-tested logic, a recorded safe state per output, watchdog, sensors
   checked against a reference, unambiguous flashing, no flashing in

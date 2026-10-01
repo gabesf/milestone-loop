@@ -186,7 +186,9 @@ other stack runs on the generic rules alone.
   processes the user has, re-runnable geometry scripts as the source of
   truth, interference and clearance checks after every change, one design
   decision at a time, fabrication files only after the previews are
-  approved.
+  approved. Simulations (FEM in FreeCAD, MuJoCo for mechanisms) answer
+  one question each, are validated against a hand calculation and are
+  checked for convergence.
 - **`electronics`** (ESP32/Arduino-class firmware with PlatformIO): one
   pin header, host-tested logic, every output's safe state on reset,
   hang and power loss, sensors checked against a reference, flashing only
@@ -212,6 +214,7 @@ names them.
 | Docker | Required by the `web` stack reference (local Supabase stack) | [docker.com](https://www.docker.com/get-started/) |
 | MCP for Unity | Required by the `unity` stack reference, with the Unity Editor open | [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp) |
 | FreeCAD MCP | Required by the `mechanical` stack reference, with FreeCAD open | [neka-nat/freecad-mcp](https://github.com/neka-nat/freecad-mcp) |
+| MuJoCo | Optional, for mechanism simulation in the `mechanical` stack reference | [mujoco.org](https://mujoco.org) |
 | PlatformIO Core | Required by the `electronics` stack reference | [platformio.org](https://platformio.org/install/cli) |
 
 ## License
