@@ -5,8 +5,8 @@ description: >-
   workflow. NOT an invocable skill — the generic workflow skills
   (app-overview, plan-milestones, find-parallel, next-milestone,
   next-group, close-milestone) read this document via a relative path when
-  the project's CLAUDE.md records `Stack: web`. Each section below maps to
-  one workflow skill.
+  the project's CLAUDE.md lists `web` in its `Stack:` line. Each section
+  below maps to one workflow skill.
 disable-model-invocation: true
 ---
 

@@ -327,7 +327,8 @@ Once the gate is passed and verified green:
    it; and any reminder the stack reference's testing-doc section asks for.
    Then STOP: no further commits, never push, don't start the next
    milestone.
-4. **Triage the user's comments** together:
+4. **Triage the user's comments** together (plus the stack reference's
+   `next-milestone / feedback triage` section, if it has one):
    - **Covered by a future milestone** → confirm the M-ID, note it in that
      milestone's Notes.
    - **Small fix, in scope** → delegate (or the one-obvious-edit

@@ -170,9 +170,10 @@ and implementers, default: the standard tier), `Implementation model:
 
 ## Stacks
 
-Stack references add rules per stack; the generic skills load the one
-named by CLAUDE.md's `Stack:` line. Any other stack runs on the generic
-rules alone.
+Stack references add rules per stack; the generic skills load the ones
+named by CLAUDE.md's `Stack:` line. A project that mixes stacks lists them
+all (`Stack: mechanical, electronics, web`) and gets each one's rules. Any
+other stack runs on the generic rules alone.
 
 - **`web`** (Supabase + Next.js, not any web app): migrations only
   through the Supabase CLI against a local Docker stack, mobile testing
@@ -180,6 +181,22 @@ rules alone.
   name.
 - **`unity`**: scene and prefab edits only through MCP for Unity, a
   runtime control panel for tunable values.
+- **`mechanical`** (machines, sheet metal, 3D-printed parts; CAD in
+  FreeCAD through its MCP server): designs only for the fabrication
+  processes the user has, re-runnable geometry scripts as the source of
+  truth, interference and clearance checks after every change, one design
+  decision at a time, fabrication files only after the previews are
+  approved.
+- **`electronics`** (ESP32/Arduino-class firmware with PlatformIO): one
+  pin header, host-tested logic, every output's safe state on reset,
+  hang and power loss, sensors checked against a reference, flashing only
+  an unambiguous board.
+
+Both physical stacks share `physical-build`: milestones are tagged
+`Kind: design` (ends in a verified package) or `Kind: build` (the user
+makes and measures the object; it closes with an as-built record), waiting
+for parts happens between milestones, every testing doc lists its hazards,
+and anything that can harm a living being gets its failsafe first.
 
 ## Companions
 
@@ -194,6 +211,8 @@ names them.
 | Supabase CLI | Required by the `web` stack reference | [supabase.com/docs/guides/cli](https://supabase.com/docs/guides/cli) |
 | Docker | Required by the `web` stack reference (local Supabase stack) | [docker.com](https://www.docker.com/get-started/) |
 | MCP for Unity | Required by the `unity` stack reference, with the Unity Editor open | [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp) |
+| FreeCAD MCP | Required by the `mechanical` stack reference, with FreeCAD open | [neka-nat/freecad-mcp](https://github.com/neka-nat/freecad-mcp) |
+| PlatformIO Core | Required by the `electronics` stack reference | [platformio.org](https://platformio.org/install/cli) |
 
 ## License
 

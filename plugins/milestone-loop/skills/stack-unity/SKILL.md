@@ -5,8 +5,8 @@ description: >-
   an invocable skill — the generic workflow skills (app-overview,
   plan-milestones, find-parallel, next-milestone, next-group,
   close-milestone) read this document via a relative path when the
-  project's CLAUDE.md records `Stack: unity`. Each section below maps to
-  one workflow skill.
+  project's CLAUDE.md lists `unity` in its `Stack:` line. Each section
+  below maps to one workflow skill.
 disable-model-invocation: true
 ---
 

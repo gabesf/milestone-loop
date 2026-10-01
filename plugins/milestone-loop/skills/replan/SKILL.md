@@ -21,7 +21,9 @@ queue with dependency and coverage validation, and commit the result.
    read the `conventions` reference: `../conventions/SKILL.md` relative to
    this skill's base directory, or the `conventions` skill by name on hosts
    that don't state it, and run its "Legacy check" and its **checkpoint
-   check** ("Git safety"): this skill pushes.
+   check** ("Git safety"): this skill pushes. Load the stack reference as
+   the conventions' "Stack reference" section says; its `plan-milestones`
+   section's tagging rules apply to milestones this revision adds.
 3. Read `docs/overview.md` if it exists — this is the canonical list of
    R-IDs. If it doesn't exist, coverage checks against R-IDs are skipped
    (warn the user once).
@@ -63,7 +65,9 @@ queue with dependency and coverage validation, and commit the result.
      the format in the existing file — Status, Covers, Acceptance criteria,
      Notes (with a `Tier:` tag, plus `TDD: yes` for engine/algorithm
      milestones, and `Adversarial gate: yes` for critical ones under
-     CLAUDE.md's `Review gate: tagged`, when applicable), and Docs.
+     CLAUDE.md's `Review gate: tagged`, when applicable, plus any tag the
+     stack reference's `plan-milestones` section requires, e.g. `Kind:` and
+     `Parts:` on physical stacks), and Docs.
    - If the revision removes milestones: confirm the R-IDs they covered are
      absorbed by other milestones — otherwise flag the coverage gap.
    - Group check: when the revision removes, reorders, or changes the

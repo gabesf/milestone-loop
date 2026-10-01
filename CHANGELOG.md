@@ -3,6 +3,38 @@
 All notable changes to this project are listed here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - 2026-09-30
+
+### Added
+
+- Several stacks per project: `Stack: mechanical, electronics, web`
+  loads every listed reference, in order. Hotspots and testing-doc
+  sections combine, any serial group mode wins, contradictions are asked
+  once and recorded in CLAUDE.md. Single-stack projects are unchanged.
+- `stack-mechanical`: FreeCAD through its MCP server, a `Fabrication:`
+  line with the user's processes, re-runnable geometry scripts as the
+  source of truth, interference and clearance checks, options sheets for
+  design decisions, fabrication files only after preview approval, serial
+  groups.
+- `stack-electronics`: PlatformIO, a probe firmware first, one pin header,
+  host-tested logic, a recorded safe state per output, watchdog, sensors
+  checked against a reference, unambiguous flashing, no flashing in
+  worktrees.
+- `physical-build`, shared by both physical stacks: `Kind: design` and
+  `Kind: build` milestones, parts check before a build starts, a Hazards
+  section in every testing doc, failsafe milestones first, dimension
+  provenance (measured beats modelled), `docs/bom.md`, and an as-built
+  record (`docs/as-built/M-XX.md`) that closes every build milestone.
+
+### Changed
+
+- `/replan` loads the stack reference, so milestones it adds carry the
+  tags the stack requires (e.g. `Kind:` and `Parts:`).
+- `/next-milestone` feedback triage also applies the stack reference's
+  `next-milestone / feedback triage` section.
+- Subagents get the path of every reference loaded for their step,
+  shared ones included.
+
 ## [0.6.2] - 2026-09-29
 
 ### Added

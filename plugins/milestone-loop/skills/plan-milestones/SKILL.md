@@ -29,7 +29,8 @@ ask as many questions as needed. A bad plan here costs every milestone later.
 5. Load the stack reference as the conventions' "Stack reference" section
    says and apply its section for this skill before proceeding. (This
    skill writes the `Stack:` line; if it is missing, settle the stack with
-   the user first.)
+   the user first — every stack the project mixes, e.g. a machine with a
+   controller is `mechanical, electronics`.)
 
 ## Process
 
@@ -90,7 +91,9 @@ ask as many questions as needed. A bad plan here costs every milestone later.
 ### 1. CLAUDE.md (update, don't replace)
 
 Add a project-specific section: what this project is (one paragraph), a
-`Stack: <stack>` line naming the project's stack (e.g. `Stack: unity`) —
+`Stack: <stack>` line naming the project's stack (e.g. `Stack: unity`), or
+its stacks comma-separated when it mixes them (e.g. `Stack: mechanical,
+electronics`; conventions' "Stack reference") —
 this is what lets every later workflow skill find the stack reference — key
 technical decisions (including pinned engine/tooling versions, if
 applicable), where the entry scene / main code lives, anything an

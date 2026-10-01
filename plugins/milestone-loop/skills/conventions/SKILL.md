@@ -19,31 +19,50 @@ a narrower rule for its own step, the skill wins for that step.
 
 ## Loading references
 
-Reference skills (this one and the `stack-<stack>` ones) are not invocable.
+Reference skills (this one, the `stack-<stack>` ones, and the shared
+references a stack reference names, such as `physical-build`) are not
+invocable.
 A workflow skill reads them as files: `../<name>/SKILL.md` relative to its
 own base directory when the harness states that directory at invocation
 (Claude Code does), or loads the skill by name through the harness's skill
 mechanism otherwise (other Agent-Skills hosts).
 
 A subagent has no skill base directory. When one needs a reference (this
-one or a stack reference), pass it the reference's absolute path, or the
-skill name only when the path is not known.
+one or a stack reference), pass it the absolute path of every reference
+loaded for that step, shared ones included, or the skill name only when
+the path is not known.
 
 ## Stack reference
 
 1. CLAUDE.md records the project's stack with a `Stack: <stack>` line (e.g.
-   `Stack: unity`), written by `/plan-milestones`.
+   `Stack: unity`), written by `/plan-milestones`. A project that mixes
+   stacks lists them comma-separated, e.g. `Stack: mechanical,
+   electronics, web`.
 2. Load the stack reference `stack-<stack>` as described in "Loading
    references". Its sections are named after the workflow skill (and step)
    that applies them, e.g. `next-milestone / quality gates`. Apply the
    invoking skill's sections at the point its preflight says; they carry the
    same force as the skill's own rules, and any toolchain check they list
-   runs then, before further work.
-3. No `Stack:` line: before `/plan-milestones` has run (no
+   runs then, before further work. A stack reference that names a shared
+   reference (e.g. `physical-build`) loads it the same way, once per
+   session even when several stack references name it, and its sections
+   apply the same way.
+3. **Several stacks.** Load the reference of every listed stack that has
+   one. Wherever a skill says "the stack reference", read "each loaded
+   reference": apply each one's section for that step, in the order the
+   `Stack:` line lists them (shared references right after the first
+   stack that names them). A step's hotspots, exclusions and testing-doc
+   sections are the union of theirs. `Group mode: serial` in any one of
+   them makes the group serial. When two references give contradicting
+   rules for the same step, stop and ask the user which applies to this
+   project, and record the answer in CLAUDE.md. CLAUDE.md's own rules
+   override every reference.
+4. No `Stack:` line: before `/plan-milestones` has run (no
    `docs/milestones.md`) that is normal — proceed without a stack
    reference. After it, the line is required: stop and ask the user which
    stack the project uses, and record the line before continuing.
-4. A recorded stack with no reference for it: proceed without one.
+5. A recorded stack with no reference for it: proceed without one (for
+   that stack only, when several are listed).
 
 ## Language and labels
 
@@ -51,7 +70,8 @@ skill name only when the path is not known.
   uses its labels exactly as the skills spell them: milestone fields
   (`Status`, `Covers`, `Acceptance criteria`, `Notes`, `Docs`,
   `Deviations`, `Retro`), tags (`Tier:`, `TDD: yes`, `Adversarial gate:
-  yes`, `Group: G-XX`), CLAUDE.md lines (English even where no skill
+  yes`, `Group: G-XX`, and `Kind: design` / `Kind: build` on physical
+  stacks), CLAUDE.md lines (English even where no skill
   spells the label out), the headings of the overview, handoff, testing
   and decision docs, the phase values in a group handoff, and the `None` /
   `none` entries that mark an empty field. Skills parse these files, so a
