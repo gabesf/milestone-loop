@@ -103,7 +103,9 @@ Three more rules run through every section:
 ## Plan — one approval for the group
 
 1. Read each member's acceptance criteria, covered requirements, notes and
-   related decision records in docs/decisions/.
+   related decision records in docs/decisions/. Run `/next-milestone`
+   Plan 1's open-decision spikes for every member that needs one, all in
+   one message.
 2. Present each member's plan as `/next-milestone` Plan 2 describes it,
    kept compact: what is built and which files it touches, how each
    acceptance criterion is met, and its tier. No per-member summary here:

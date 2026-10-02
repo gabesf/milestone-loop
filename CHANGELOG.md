@@ -25,6 +25,11 @@ All notable changes to this project are listed here. Versions follow
   the end of every step. Decisions with a recommended option that is
   cheap to undo are made, recorded and listed instead of asked, including
   an implementer's BLOCKED; the workflow's gates stay questions.
+- Open design decisions are settled before the plan: when a criterion
+  leaves a visual parameter open or has a "doesn't fit → BLOCKED" clause,
+  `/next-milestone` (and `/next-group`, per member) runs a spike that
+  measures the options and shows them in one composite image; the
+  approval picks one.
 
 ### Changed
 

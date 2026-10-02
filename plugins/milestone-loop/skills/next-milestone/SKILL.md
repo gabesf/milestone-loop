@@ -84,6 +84,18 @@ Two rules run through every section:
 
 1. Read the target milestone — acceptance criteria, covered requirements,
    notes — and related decision records in docs/decisions/.
+   **Open decisions first.** If a criterion leaves a design parameter to
+   be found during implementation (a position, size, color, timing,
+   framing) or says what happens when something doesn't fit ("if X
+   doesn't fit → BLOCKED", "options to the user"), settle it before the
+   plan. Launch one spike subagent (standard tier's model) that tries the
+   options against the running app — through runtime parameters or a
+   scratch worktree, leaving the main tree untouched — and returns ONE
+   composite image with the options side by side and labeled, plus the
+   numbers the criterion cares about. The plan shows it with a
+   recommendation; the approval picks an option (no pick: the
+   recommendation stands). The choice goes to the brief's "Decisions
+   made", so no implementer stops for it.
 2. Present the plan. OPEN with a **two-line summary**: two
    plain-language sentences (no jargon) on what this milestone
    builds and what changes for the user. Then one line per step, in

@@ -122,7 +122,10 @@ labels"):
 - **Status:** open            (open | in-progress | done)
 - **Covers:** R-01, R-03
 - **Acceptance criteria:** written NOW, before implementation; short,
-  verifiable statements of what must be observably true.
+  verifiable statements of what must be observably true. Settle design
+  parameters here when you can; one left open (a position or size to be
+  found) is named as open, and `/next-milestone` measures the options
+  before its plan.
 - **Notes:** dependencies on other milestones, risks, anything relevant.
 - **Docs:** relative links to the `docs/systems|concepts|guidelines` files
   this milestone touches — the implementing agent reads these first.
