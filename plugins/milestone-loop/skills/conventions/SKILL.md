@@ -85,6 +85,29 @@ the path is not known.
   which are asked in that language. No line: use the language the user
   writes in.
 
+## Talking to the user
+
+Applies to every message a workflow skill shows the user.
+
+- **Short.** Say what happened and what it means in a few lines. Detail
+  lives in files (handoff, testing doc, decision records) and is linked,
+  not pasted. What the user must act on is the exception: tier-2 steps
+  and questions are written out in full.
+- **Closing block.** End every message that finishes a step or waits for
+  the user with at most five lines, in the project's Language: what was
+  decided on the user's behalf, what needs the user (or "nothing"), and
+  what comes next. Many users read only this block, so it stands on its
+  own.
+- **Decide what is reversible.** Ask only about a decision that is hard to
+  undo, or one with no option you can recommend. When an option can be
+  recommended and a wrong choice is cheap to undo (a value, a placement, a
+  wording, a visual detail), apply it, record it under the handoff's
+  "Decisions made" (it reaches Deviations at close), list it in the
+  closing block, and carry on: the user overrides it while testing. An
+  open question holds the whole session, overnight if nobody is there.
+- The workflow's gates stay questions: overview sign-off, plan approval,
+  the green light to close, and anything that touches `main`.
+
 ## Legacy projects
 
 Projects started on the pre-0.5 in-house workflow label their files in

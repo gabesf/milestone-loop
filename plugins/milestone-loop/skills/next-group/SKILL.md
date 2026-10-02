@@ -182,7 +182,8 @@ member moves: it is how a resumed session knows where it is, and what
    - checkpoint in the worktree: `git -C <worktree> add -A -- <no-docs>`,
      then `git -C <worktree> commit -m "wip(M-XX): pre-review checkpoint"`.
 
-   On BLOCKED, relay the question while the other members keep running.
+   On BLOCKED, handle it as `/next-milestone` "On BLOCKED" says while the
+   other members keep running.
    If the answer changes another member, the group was not independent:
    offer to drop this member. A member still red after two fresh
    implementers: offer to drop it ("Drop a member").

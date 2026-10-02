@@ -20,6 +20,18 @@ All notable changes to this project are listed here. Versions follow
   capture, the `/hotfix` mini-gate instead of the full gate, no testing
   doc, a one-line Retro. Set by `/plan-milestones` and `/replan`, or
   proposed in `/next-milestone`'s plan. Untagged milestones are unchanged.
+- Conventions, "Talking to the user": short messages, detail in files, and
+  a closing block of at most five lines (decided / needs you / next) at
+  the end of every step. Decisions with a recommended option that is
+  cheap to undo are made, recorded and listed instead of asked, including
+  an implementer's BLOCKED; the workflow's gates stay questions.
+
+### Changed
+
+- `/next-milestone` plans fit one screen (one line per step), and the
+  hand-over keeps tier 2 in full but summarizes tier 1 and the gate in
+  three lines. `/plan-milestones` presents a summary with links instead
+  of the documents.
 
 ## [0.7.0] - 2026-09-30
 

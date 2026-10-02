@@ -75,7 +75,9 @@ ask as many questions as needed. A bad plan here costs every milestone later.
    under the rules stated there — keep things simple, don't overengineer.
    Add whatever docs, milestones and CLAUDE.md rules the stack reference's
    plan-milestones section specifies (e.g. a runtime control panel).
-5. Present everything and iterate on feedback.
+5. Present a summary (the milestone table, the groups, anything still
+   open) with links to the files, not the documents themselves, and
+   iterate on feedback.
 6. **Grill pass (optional, encouraged).** Before committing, suggest the user
    run `/grill-me` over the generated plan. Explicitly tell them it is
    optional but encouraged. If `/grill-me` is not installed, offer to

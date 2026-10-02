@@ -91,8 +91,9 @@ milestone status and never expands scope beyond the reported bug.
    bug>` and push to the integration branch (unless `Push: no`) under the
    conventions' "Push" and "Git safety" sections.
 
-9. **Report.** Tell the user: what was fixed, which test covers it (if
-   automated), and whether any milestone Notes were updated. If every
+9. **Report**, as the conventions' "Talking to the user" closing block:
+   what was fixed, which test covers it (if automated), and whether any
+   milestone Notes were updated. If every
    milestone is `done` and the integration branch is not `main`, add how
    the fix reaches `main`: direct mode, through `/close-milestone` (it then
    runs only its `main` update); PR mode, through the integration → `main`

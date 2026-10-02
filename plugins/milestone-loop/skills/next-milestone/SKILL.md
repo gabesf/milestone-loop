@@ -86,10 +86,14 @@ Two rules run through every section:
    notes — and related decision records in docs/decisions/.
 2. Present the plan. OPEN with a **two-line summary**: two
    plain-language sentences (no jargon) on what this milestone
-   builds and what changes for the user. Then: what will be built, in what
-   order, which files/assets are touched, how each acceptance criterion
-   will be met, and the milestone's recommended tier if tagged (the user
-   can still switch with `/model` before approving). A milestone tagged
+   builds and what changes for the user. Then one line per step, in
+   order: what is built and which files or assets it touches; a
+   criterion whose approach isn't obvious from its step gets one line on
+   how it is met. Then the decisions the plan makes that the user may want
+   to change, each with the choice made, and the milestone's recommended
+   tier if tagged (the user can still switch with `/model` before
+   approving). Keep the plan to one screen (conventions, "Talking to the
+   user"): detail goes into the brief after approval. A milestone tagged
    `Size: S`, or one that fits the conventions' "Small milestones"
    definition (propose the tag; approval settles it), gets a plan of a few
    lines and runs the light track that section describes: it replaces
@@ -140,7 +144,9 @@ file only to verify a specific claim or finding.
    Use several implementers only for independent parts (in parallel only
    on disjoint files) or when one returns partial work under context
    pressure; each later one gets the brief plus the updated "Done".
-3. **On BLOCKED:** relay the question verbatim, record the answer under
+3. **On BLOCKED:** decide it yourself when the conventions' "Talking to
+   the user" section allows (a recommended option, cheap to undo);
+   otherwise relay the question verbatim. Record the answer under
    "Decisions made" (and in docs/decisions/ if it is a design change),
    then launch a fresh implementer from the current state.
 4. **On return:** verify (the rule above), then update "Done"/"Remaining"
@@ -330,13 +336,14 @@ steps in the hand-over message):
      line and continue once it's there — never demote the step to avoid
      asking.
 3. **Hand over in chat.** REPRODUCE tier 2 inline — full "How to test"
-   steps and expected results; the user must not need to open a file. Then:
-   the testing doc's path (one line); a compact tier-1 summary (one line
-   per step: driven, observed); the gate summary (found, fixed, dismissed);
-   one line on what the Self-report left unverified and which step covers
-   it; and any reminder the stack reference's testing-doc section asks for.
-   Then STOP: no further commits, never push, don't start the next
-   milestone.
+   steps and expected results; the user must not need to open a file.
+   Then at most three lines: the testing doc's path; tier 1 (steps
+   passed, or what failed and was fixed); the gate (found, fixed,
+   dismissed). Details stay in the testing doc. Add any reminder the stack
+   reference's testing-doc section asks for, then the closing block
+   (conventions, "Talking to the user"), decisions made on the user's
+   behalf first so they can be checked while testing. Then STOP: no
+   further commits, never push, don't start the next milestone.
 4. **Triage the user's comments** together (plus the stack reference's
    `next-milestone / feedback triage` section, if it has one):
    - **Covered by a future milestone** → confirm the M-ID, note it in that

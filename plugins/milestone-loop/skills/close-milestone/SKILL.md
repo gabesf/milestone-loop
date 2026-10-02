@@ -135,7 +135,8 @@ the second human gate of the workflow. The whole close runs in this session.
    - `git log --oneline -5` shows no `wip(` commit;
    - `docs/milestones.md` shows the milestone `done` with both lines.
    A failed check is reported to the user with the state, not patched over.
-7. **Report:** milestone closed (hash, branch, PR URL in PR mode) and which
+7. **Report**, as the conventions' "Talking to the user" closing block:
+   milestone closed (hash, branch, PR URL in PR mode) and which
    milestone is next (or which group, when the next open milestone carries
    a `Group:` tag and its group can run now; the command is then
    `/next-group`). State the next milestone's recommended tier and its
