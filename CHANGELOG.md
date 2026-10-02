@@ -43,6 +43,13 @@ All notable changes to this project are listed here. Versions follow
   stalled. Implementers keep their context lean: quiet test reporters,
   files read by excerpt, never docs/milestones.md, downscaled screenshots.
   The prompt no longer re-reads CLAUDE.md where the host already loads it.
+- Process requirements live once in
+  `docs/guidelines/checkpoint-checklist.md`, which implementers go
+  through before reporting; acceptance criteria no longer copy them.
+  `/close-milestone`'s escalation check writes lessons there instead of
+  CLAUDE.md, and warns when CLAUDE.md passes 15 KB (it is loaded into every
+  agent). `/plan-milestones` keeps queue status and history out of
+  CLAUDE.md.
 
 ## [0.7.0] - 2026-09-30
 

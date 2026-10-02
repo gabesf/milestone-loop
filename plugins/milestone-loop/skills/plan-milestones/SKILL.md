@@ -112,6 +112,13 @@ End the section with a **doc index**: a linked list of every file under
 description each, so an implementing agent knows what exists and reads only
 what its milestone needs.
 
+CLAUDE.md is loaded into every agent on every call, so it holds only what
+every agent needs: rules, commands, the doc index. Queue status, history
+and dated lessons stay out of it. Process requirements that apply to every
+milestone (a runtime check before the checkpoint, docs kept in sync, a
+before/after proof) go once in `docs/guidelines/checkpoint-checklist.md`,
+linked from the doc index; acceptance criteria don't repeat them.
+
 ### 2. docs/milestones.md
 
 Header: a summary table (ID | Title | Status | Covers). Then one section

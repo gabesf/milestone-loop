@@ -148,7 +148,8 @@ file only to verify a specific claim or finding.
    excerpt (`offset`/`limit`, `grep -n`) rather than whole, never
    docs/milestones.md (the brief holds what it needs), screenshots
    downscaled before opening and one contact sheet over many images;
-   return a final report with exactly:
+   before reporting, go through `docs/guidelines/checkpoint-checklist.md`
+   if the project has one; return a final report with exactly:
    - **Done**: what was built, with file paths.
    - **Gates**: the exact build/test commands run and their results.
    - **Self-report**: (a) what it claims works but did not verify (not

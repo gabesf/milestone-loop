@@ -75,10 +75,15 @@ the second human gate of the workflow. The whole close runs in this session.
    `docs/testing/G-XX.md`.
 3. **Escalation check.** Scan the Retro lines of previously closed
    milestones. If the same category of escape appears in 2 or more (e.g.
-   "visual bug the gate missed" recurring), suggest an adjustment to the
-   project's CLAUDE.md or guidelines that would prevent it (a review-lens
-   hint, a testing-doc rule, a build-time check). The user decides; if yes,
-   apply it now so the commit picks it up.
+   "visual bug the gate missed" recurring), suggest a line that would
+   prevent it (a review-lens hint, a testing-doc rule, a build-time check)
+   for `docs/guidelines/checkpoint-checklist.md` — create it and link it
+   from CLAUDE.md's doc index if missing. CLAUDE.md gets a rule only when
+   every agent needs it on every call: it is loaded into all of them. The
+   user decides; if yes, apply it now so the commit picks it up.
+   **CLAUDE.md size.** If CLAUDE.md is over 15 KB, say so and propose what
+   to move out: queue status and history (docs/milestones.md has them),
+   dated lessons (to the checklist). The user decides; apply now if yes.
 4. **Decisions backstop.** If a design change from the user's feedback is
    not yet recorded, write its decision record in `docs/decisions/` now.
 
