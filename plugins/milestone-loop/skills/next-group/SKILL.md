@@ -32,7 +32,9 @@ two opening rules to everything, and these sections to each member, with
 the overrides below: "Delegated implementation", "Quality gates" and
 "Adversarial review gate". Its "Closing" applies to the group as a whole
 (see "Testing"). Its Preflight, Plan and Handoff sections do not apply:
-this skill's own replace them.
+this skill's own replace them. A member tagged `Size: S` runs the
+conventions' "Small milestones" light track for its implementation and
+gate; the group's testing stays one script.
 
 Three more rules run through every section:
 

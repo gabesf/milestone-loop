@@ -61,7 +61,8 @@ the second human gate of the workflow. The whole close runs in this session.
    user reported nothing); (c) how many rounds the gate ran (0 if skipped
    by CLAUDE.md policy, 1 or 2 otherwise). "None / none / 1 round" and
    "n/a / none / 0 rounds (gate skipped)" are valid; omitting the line is
-   not. If this session did not run `/next-milestone` for the milestone
+   not. A `Size: S` milestone keeps the three data points to one short
+   line. If this session did not run `/next-milestone` for the milestone
    (fresh session after a handoff), reconstruct (a) and (c) from
    `docs/testing/M-XX.md`'s "Watch points", `docs/handoff/M-XX.md` and
    the `wip(M-XX)` commit, and ask the user for (b) — never invent a Retro.

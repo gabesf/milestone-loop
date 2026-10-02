@@ -70,8 +70,8 @@ the path is not known.
   uses its labels exactly as the skills spell them: milestone fields
   (`Status`, `Covers`, `Acceptance criteria`, `Notes`, `Docs`,
   `Deviations`, `Retro`), tags (`Tier:`, `TDD: yes`, `Adversarial gate:
-  yes`, `Group: G-XX`, and `Kind: design` / `Kind: build` on physical
-  stacks), CLAUDE.md lines (English even where no skill
+  yes`, `Group: G-XX`, `Size: S`, and `Kind: design` / `Kind: build` on
+  physical stacks), CLAUDE.md lines (English even where no skill
   spells the label out), the headings of the overview, handoff, testing
   and decision docs, the phase values in a group handoff, and the `None` /
   `none` entries that mark an empty field. Skills parse these files, so a
@@ -175,6 +175,43 @@ tier, resolve it through the mapping above.
 that alias's model or one ranked above it (the top tier's model is above
 the standard tier's). When the session cannot tell (a model outside the
 mapping), ask the user instead of guessing.
+
+## Small milestones (`Size: S`)
+
+A milestone tagged `Size: S` in its Notes is one small change: one
+behavior, no engine or algorithm (never with `Tier: top` or `TDD: yes`),
+no open design decision, no schema migration or new dependency, and a
+diff expected to touch a few files. The full workflow costs more than such
+a change, so it runs a light track. `/plan-milestones` and `/replan` set
+the tag; `/next-milestone` may propose it in its plan for an untagged
+milestone that fits, and the approval settles it. No tag: every skill runs
+its full track.
+
+The light track:
+
+- **Criteria** state the behavior only. Process requirements (runtime
+  capture, docs sync, before/after proof) are not criteria; the project's
+  checklist applies, scaled to the change.
+- **Implementation.** A few edits in one or two files: the orchestrating
+  session may make them itself, an exception to "does not write code".
+  Anything larger: one implementer, as usual.
+- **Tests.** One assertion of the new behavior where the project already
+  has a place for it. Never new test infrastructure for an S change.
+- **Runtime check.** Only for a visual criterion: one capture, at the
+  project's default size, through the project's capture harness if it has
+  one.
+- **Docs.** Only the text the change makes false.
+- **Gate.** The `/hotfix` mini-gate replaces the full gate: one
+  `adversarial-reviewer` (standard tier's model) with the bugs &
+  correctness lens, told to flag scope creep too; one round. The review
+  policy still decides whether it runs.
+- **Testing.** No testing doc. Tier-1 results and the tier-2 steps
+  (usually one or two) go in the hand-over message.
+- **Close.** Deviations as usual; the Retro's data points on one short
+  line.
+
+Several small changes the user asks for together are planned as ONE
+`Size: S` milestone, one criterion each, rather than one milestone each.
 
 ## Parallel groups
 

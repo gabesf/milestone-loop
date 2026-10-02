@@ -216,6 +216,11 @@ enforce red-green TDD — a failing test before the code for each engine
 behavior — instead of the default "write cheap automated checks" policy.
 The tag is set here at planning time, not decided per-session.
 
+**Small milestones.** Tag `Size: S` on milestones that fit the
+conventions' "Small milestones" definition, and write their criteria as
+that section says: behavior only. Fold small changes into one `Size: S`
+milestone rather than giving each its own.
+
 **Parallel groups.** Once the milestones are drafted, read
 `../find-parallel/SKILL.md` and apply its Analysis section to the whole
 plan (footprints come from the criteria and docs: there is little or no

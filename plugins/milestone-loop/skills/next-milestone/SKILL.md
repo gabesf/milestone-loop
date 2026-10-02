@@ -23,7 +23,8 @@ squashes it into the definitive commit after the user's green light.
 Two rules run through every section:
 
 - **This session orchestrates and judges; it does not write code.**
-  Implementers write it (see "Delegated implementation"). Docs
+  Implementers write it (see "Delegated implementation"); the one
+  exception is a `Size: S` change (conventions, "Small milestones"). Docs
   (milestones.md, handoff, testing doc, decisions) are always this
   session's own job.
 - **Verify, don't trust.** Every green claim from a subagent — build,
@@ -88,7 +89,12 @@ Two rules run through every section:
    builds and what changes for the user. Then: what will be built, in what
    order, which files/assets are touched, how each acceptance criterion
    will be met, and the milestone's recommended tier if tagged (the user
-   can still switch with `/model` before approving). CLOSE with
+   can still switch with `/model` before approving). A milestone tagged
+   `Size: S`, or one that fits the conventions' "Small milestones"
+   definition (propose the tag; approval settles it), gets a plan of a few
+   lines and runs the light track that section describes: it replaces
+   the matching parts of "Delegated implementation", "Quality gates",
+   the gate and "Closing" below. CLOSE with
    the implementer-model question: "Implementer model? (default: X)" where
    X is the default implementer model from the conventions'
    "Model tiers" section. The answer is an alias or ID accepted by the
@@ -166,7 +172,9 @@ file only to verify a specific claim or finding.
 ## Adversarial review gate (automatic, before any handoff)
 
 When implementation is verified green, run this gate before the user sees
-anything — the user only tests code that survived it.
+anything — the user only tests code that survived it. Under `Size: S`,
+make the checkpoint (step 1), then run the mini-gate the conventions'
+"Small milestones" section names instead of steps 2–6.
 
 **Policy.** CLAUDE.md's `Review gate:` line (from `/plan-milestones`):
 `all`, `tagged` (only milestones tagged `Adversarial gate: yes`), or
@@ -271,7 +279,9 @@ filling up, external blocker, user-requested pause):
 
 ## Closing — handing over for manual testing
 
-Once the gate is passed and verified green:
+Once the gate is passed and verified green (under `Size: S`: no testing
+doc; run the tier-1 steps of step 2 and put their results and the tier-2
+steps in the hand-over message):
 
 1. **Write `docs/testing/M-XX.md`** in two tiers. The agent does
    everything it possibly can; the user does only what is impossible for

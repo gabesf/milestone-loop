@@ -64,8 +64,9 @@ queue with dependency and coverage validation, and commit the result.
    - If the revision adds new milestones: draft the full section following
      the format in the existing file — Status, Covers, Acceptance criteria,
      Notes (with a `Tier:` tag, plus `TDD: yes` for engine/algorithm
-     milestones, and `Adversarial gate: yes` for critical ones under
-     CLAUDE.md's `Review gate: tagged`, when applicable, plus any tag the
+     milestones, `Adversarial gate: yes` for critical ones under
+     CLAUDE.md's `Review gate: tagged`, and `Size: S` when the
+     conventions' "Small milestones" definition fits, plus any tag the
      stack reference's `plan-milestones` section requires, e.g. `Kind:` and
      `Parts:` on physical stacks), and Docs.
    - If the revision removes milestones: confirm the R-IDs they covered are

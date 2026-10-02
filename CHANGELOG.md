@@ -14,6 +14,12 @@ All notable changes to this project are listed here. Versions follow
   `/close-milestone` appends one line per milestone or group to
   `docs/metrics.jsonl` (never to the Retro); `/milestone-status` shows the
   trend. Baseline in `docs/measurements.md`.
+- `Size: S` light track for small changes (conventions, "Small
+  milestones"): behavior-only criteria, the orchestrator may make a
+  few-line change itself, one test where a seam exists, at most one
+  capture, the `/hotfix` mini-gate instead of the full gate, no testing
+  doc, a one-line Retro. Set by `/plan-milestones` and `/replan`, or
+  proposed in `/next-milestone`'s plan. Untagged milestones are unchanged.
 
 ## [0.7.0] - 2026-09-30
 
