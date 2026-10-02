@@ -99,6 +99,8 @@ Three more rules run through every section:
    member that no longer fits, propose running without it; with the
    user's OK, continue without it. A group reduced to one member: stop and
    point to `/next-milestone`.
+8. Keep the machine awake as the conventions' "Keeping the machine awake"
+   section says.
 
 ## Plan — one approval for the group
 

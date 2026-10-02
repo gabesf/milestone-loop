@@ -64,6 +64,10 @@ All notable changes to this project are listed here. Versions follow
   tests alone. Doc and comment findings count only when the text is false
   about the code, and are fixed in one batch without opening a round; the
   reviewer agent no longer flags wording or docs written after the review.
+- On macOS, `/next-milestone` and `/next-group` keep the machine awake
+  (`caffeinate`, 8-hour limit) while agents work, and release it at every
+  hand-over or handoff. A sleeping Mac had cut off running agents for
+  hours in one group.
 
 ## [0.7.0] - 2026-09-30
 

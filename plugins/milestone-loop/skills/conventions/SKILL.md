@@ -317,6 +317,27 @@ the repo protects the integration branch or `main`; direct is simpler and
 faster for a solo project. Record the answer in CLAUDE.md so no later
 session asks again.
 
+## Keeping the machine awake
+
+A sleeping machine cuts off every running agent mid-response; each one
+resumes minutes later, and a group loses hours. On macOS (`uname` prints
+`Darwin`), `/next-milestone` and `/next-group` start this once their
+preflight passes, and again whenever work resumes after the user's
+feedback:
+
+```
+nohup caffeinate -is -t 28800 >/dev/null 2>&1 & echo $! > .git/milestone-loop-awake.pid
+```
+
+They stop it whenever they hand over to the user or write a handoff:
+
+```
+kill "$(cat .git/milestone-loop-awake.pid)" 2>/dev/null; rm -f .git/milestone-loop-awake.pid
+```
+
+The 8-hour limit ends it if a session dies. `-s` holds only on AC power:
+on battery a closed lid still sleeps the machine. Other systems: skip.
+
 ## Grill-me
 
 `/grill-me` is a third-party skill (`mattpocock/skills`) that

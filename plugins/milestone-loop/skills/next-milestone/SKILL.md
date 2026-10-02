@@ -79,6 +79,8 @@ Two rules run through every section:
    that don't state it. Load the stack reference as its "Stack reference"
    section says and apply its `next-milestone` sections — toolchain checks
    run NOW, before any implementation work.
+7. Keep the machine awake as the conventions' "Keeping the machine awake"
+   section says.
 
 ## Plan
 
