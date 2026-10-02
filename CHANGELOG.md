@@ -59,6 +59,11 @@ All notable changes to this project are listed here. Versions follow
   their own Editor (`Agent editor:`); a busy Editor is reported at once.
   `/next-group` runs tier-1 testers at the same time when each can drive
   its own headless browser.
+- Gate: the second round runs only when round-1 fixes changed runtime
+  code (source, styles, shaders, scenes, assets), not docs, comments or
+  tests alone. Doc and comment findings count only when the text is false
+  about the code, and are fixed in one batch without opening a round; the
+  reviewer agent no longer flags wording or docs written after the review.
 
 ## [0.7.0] - 2026-09-30
 

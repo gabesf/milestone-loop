@@ -256,7 +256,10 @@ informal reviews.
    - Self-report items about future milestones → that milestone's Notes;
    - Self-report unverified claims no reviewer could see from the diff
      (runtime, integrations, data) → never dismissed: they become the
-     testing doc's "Watch points".
+     testing doc's "Watch points";
+   - docs and comments → real only when the text states something false
+     about the code. Fix them in one batch, here or with the next fix;
+     they never count as a code change for step 6.
    Fixes go to a fresh implementer (step 5 of "Delegated
    implementation") and must be MINIMAL: reviewers invent
    hypotheticals by design, and a fix more complex than the problem it
@@ -265,7 +268,9 @@ informal reviews.
    HEAD -- <paths>` or `git reset --hard HEAD`) and try another approach.
 5. **Verify** after the fixes: full build and entire test suite, green
    before moving on.
-6. **Second round (only if round 1 changed code):** ONE fresh
+6. **Second round (only if round 1's fixes changed runtime code** —
+   source, styles, shaders, scenes, assets; not docs, comments or tests
+   alone**):** ONE fresh
    `adversarial-reviewer` (same model and fallback) on
    the fix diff (`git diff HEAD -- . ':!docs/handoff'`), asking whether
    the fixes added defects or bloat. Same filter; fix what survives;
