@@ -102,7 +102,8 @@ Applies to every message a workflow skill shows the user.
   undo, or one with no option you can recommend. When an option can be
   recommended and a wrong choice is cheap to undo (a value, a placement, a
   wording, a visual detail), apply it, record it under the handoff's
-  "Decisions made" (it reaches Deviations at close), list it in the
+  "Decisions made" marked `(on the user's behalf)` (it reaches Deviations
+  at close), list it in the
   closing block, and carry on: the user overrides it while testing. An
   open question holds the whole session, overnight if nobody is there.
 - These stay questions: the workflow's gates (overview sign-off, plan
@@ -227,8 +228,8 @@ The light track:
   one.
 - **Docs.** Only the text the change makes false.
 - **Gate.** `/hotfix`'s mini-gate (its step 6) replaces the full gate,
-  with the reviewer also told to flag scope creep. The review policy
-  still decides whether it runs.
+  with the reviewer also given the project's checkpoint checklist and told
+  to flag scope creep. The review policy still decides whether it runs.
 - **Testing.** No testing doc. Tier-1 results, the tier-2 steps (usually
   one or two) and the Self-report's unverified claims (as watch points,
   one line each) go in the hand-over message.

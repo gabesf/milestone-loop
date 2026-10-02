@@ -50,13 +50,30 @@ def text_of(content):
     return ''
 
 
+ROLES = {'implementer': 'implementer', 'fix': 'fix', 'review': 'reviewer', 'spike': 'test/capture',
+         'tier-1': 'test/capture'}
+
+
+def parse_time(s):
+    s = s.strip().replace('Z', '+00:00')
+    try:
+        return datetime.fromisoformat(s).timestamp()
+    except ValueError:
+        return datetime.strptime(s, '%Y-%m-%d %H:%M:%S %z').timestamp()
+
+
 def role_of(meta):
     kind = meta.get('agentType', '')
     d = meta.get('description', '')
-    if 'adversarial' in kind or re.search(r'\breview|\blens\b|\blente\b|\brevis', d, re.I):
+    named = re.match(r'\S+ (implementer|fix|review|spike|tier-1)\b', d)
+    if named:  # the workflow's naming: "M-07 implementer", "M-07 review: bugs", ...
+        return ROLES[named.group(1)]
+    if 'adversarial' in kind:
         return 'reviewer'
     if re.search(r'\bfix|correç|\bfinish\b|\bapply\b', d, re.I):
         return 'fix'
+    if re.search(r'\breview|\blens\b|\blente\b', d, re.I):
+        return 'reviewer'
     if re.search(r'implement', d, re.I):
         return 'implementer'
     if re.search(r'\btier[- ]?1|tester|captur|\bspike\b', d, re.I):
@@ -222,8 +239,8 @@ def main():
         raise SystemExit(f'no transcripts under {base}')
     if a.latest:
         files = files[-1:]
-    since = datetime.fromisoformat(a.since).timestamp() if a.since else 0
-    active_since = datetime.fromisoformat(a.active_since).timestamp() if a.active_since else None
+    since = parse_time(a.since + ' 00:00:00 +0000' if a.since and len(a.since) == 10 else a.since) if a.since else 0
+    active_since = parse_time(a.active_since) if a.active_since else None
     picked = []
     for f in files:
         sid = os.path.basename(f)[:-6]

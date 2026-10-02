@@ -130,7 +130,8 @@ Three more rules run through every section:
      `/next-milestone` "Delegated implementation" step 1 says;
    - write `docs/handoff/G-XX.md` from the template below, with `Base` =
      the current `HEAD` SHA;
-   - mark every member `in-progress` in docs/milestones.md;
+   - mark every member `in-progress` in docs/milestones.md, adding
+     `Size: S` to the Notes of a member whose approval settled it;
    - `git add -A && git commit -m "wip(group): start G-XX"`. NEVER push
      it. It makes the plan survive a dead session, and worktrees branch
      from it.
@@ -252,7 +253,8 @@ Each member was verified alone; their combination has never been built.
    members, logic that two members each wrote because neither could see
    the other, and clashes over shared state or contracts. It gets the
    diff command `git diff <Base> HEAD -- <no-docs>`, which files belong to
-   which member, the members' acceptance criteria, and CLAUDE.md. Same
+   which member, the members' acceptance criteria, CLAUDE.md, and the
+   checkpoint checklist if the project has one. Same
    filter as the gate; minimal fixes, committed as `wip(M-XX):
    integration fix`; one round.
 3. Update `docs/handoff/G-XX.md` (Integration, Next step). **Context

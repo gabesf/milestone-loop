@@ -62,7 +62,8 @@ the second human gate of the workflow. The whole close runs in this session.
 
 1. **Deviations** line, when the implementation differed from the plan (scope
    moved, criteria adjusted, comments deferred to other milestones, and
-   the handoff's "Decisions made" taken on the user's behalf).
+   the handoff's "Decisions made" entries marked `(on the user's
+   behalf)`).
    "None" is a valid entry; silence is not — future sessions rely on this
    being trustworthy.
 2. **Retro:** line with three data points: (a) what the adversarial gate
@@ -107,13 +108,13 @@ the second human gate of the workflow. The whole close runs in this session.
    with a `# Milestones archive` heading and add the link under the
    summary table, as the conventions' "Milestone archive" section says;
    apply an accepted archive offer here too); the table row stays, marked
-   `done`. If the milestone carries a `Group:` tag and other members of
-   that group are still `open` (it ran alone), remove the tag from them:
-   that group can no longer run as one.
+   `done`. If the milestone carries a `Group:` tag and it ran alone,
+   leaving only one other member of that group `open`, remove the tag
+   from that member: a group needs two.
    **Metrics.** Then append the output of `python3
    <plugin>/scripts/measure-sessions.py "<project root>" --jsonl
-   --milestone M-XX --active-since "<author date of the first wip(M-XX)
-   commit>"` to `docs/metrics.jsonl` (create it if missing), where
+   --milestone M-XX --active-since "$(git log -1 --format=%aI <first
+   wip(M-XX) commit>)"` to `docs/metrics.jsonl` (create it if missing), where
    `<plugin>` is `../..` from this skill's base directory (group mode:
    `--milestone G-XX` and the `wip(group): start` commit's date; no `wip`
    commit: `--latest`). If the script is missing or fails, say so in one
