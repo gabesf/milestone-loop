@@ -48,6 +48,19 @@ the second human gate of the workflow. The whole close runs in this session.
    `Commit mode: pr` line, **direct** with `Commit mode: direct`. No line:
    ask as the conventions' "Commit mode" section says and record the
    answer in CLAUDE.md; the close commit carries it.
+7. **Archive offer (once per project).** When `docs/milestones.md` still
+   holds sections of `done` milestones, `docs/milestones-archive.md` does
+   not exist, and CLAUDE.md has no `Milestone archive:` line, offer to
+   clean up now, in one commit `docs: archive closed milestones` made
+   before the close (branch check first; pushed with the close):
+   - move every `done` section to the archive (conventions, "Milestone
+     archive");
+   - delete handoffs left over from `done` milestones, listed first;
+   - if image files are committed under `docs/` beyond the contact sheets
+     the testing docs link, untrack their folders (`git rm -r --cached`,
+     plus a `.gitignore` entry); the files stay on disk.
+   The user may take any part. On no, record `Milestone archive: no` in
+   CLAUDE.md (the close commit carries it) and never offer again.
 
 ## Compose the record
 
@@ -74,7 +87,7 @@ the second human gate of the workflow. The whole close runs in this session.
    group handoff's "Gate results" and "Integration", (d) from
    `docs/testing/G-XX.md`.
 3. **Escalation check.** Scan the Retro lines of previously closed
-   milestones. If the same category of escape appears in 2 or more (e.g.
+   milestones (grep `docs/milestones.md` and `docs/milestones-archive.md`). If the same category of escape appears in 2 or more (e.g.
    "visual bug the gate missed" recurring), suggest a line that would
    prevent it (a review-lens hint, a testing-doc rule, a build-time check)
    for `docs/guidelines/checkpoint-checklist.md` — create it and link it
@@ -91,7 +104,11 @@ the second human gate of the workflow. The whole close runs in this session.
 
 1. **Docs edit.** In `docs/milestones.md`, set the milestone to `done` and
    add the Deviations and Retro lines under it, matching the file's existing
-   formatting.
+   formatting. Then, unless CLAUDE.md says `Milestone archive: no`, move
+   its whole section to the end of `docs/milestones-archive.md` (create it
+   with a `# Milestones archive` heading and add the link under the
+   summary table, as the conventions' "Milestone archive" section says);
+   the table row stays, marked `done`.
    **Metrics.** Then append one line to `docs/metrics.jsonl` (create it if
    missing) with the output of `python3 <plugin>/scripts/measure-sessions.py
    "<project root>" --latest --jsonl --milestone M-XX` (group mode:
@@ -138,7 +155,8 @@ the second human gate of the workflow. The whole close runs in this session.
    - `git log @{u}..HEAD` is empty — nothing left unpushed (skip under
      `Push: no`);
    - `git log --oneline -5` shows no `wip(` commit;
-   - `docs/milestones.md` shows the milestone `done` with both lines.
+   - the summary table shows the milestone `done`, and its section (in
+     the archive, unless `Milestone archive: no`) has both lines.
    A failed check is reported to the user with the state, not patched over.
 7. **Report**, as the conventions' "Talking to the user" closing block:
    milestone closed (hash, branch, PR URL in PR mode) and which

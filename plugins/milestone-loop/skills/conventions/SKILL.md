@@ -243,7 +243,8 @@ the same time, each by its own implementer, and are tested and closed
 together. `/find-parallel` (and `/plan-milestones`, which applies its
 analysis) records a group as a `Group: G-XX` tag in each member's Notes —
 the tag exactly, then free prose in parentheses. A group is every
-milestone carrying the same tag. G-IDs are never reused, and `done`
+milestone carrying the same tag. G-IDs are never reused (the archive's
+tags count too, see "Milestone archive"), and `done`
 milestones keep their tag as history. `/next-group` runs a group.
 
 - **One active unit at a time:** one milestone (`/next-milestone`) or one
@@ -255,6 +256,17 @@ milestones keep their tag as history. `/next-group` runs a group.
 - **Mode:** parallel — a git worktree per member — unless the stack
   reference's `next-group` section says `Group mode: serial`: members are
   then implemented one after another in the main tree.
+
+## Milestone archive
+
+`/close-milestone` moves each closed milestone's section (criteria,
+Notes, Deviations, Retro) to the end of `docs/milestones-archive.md`.
+`docs/milestones.md` keeps the summary table, with every milestone and
+its `Covers` (done ones included), a link to the archive under the table,
+and the sections of the milestones still `open` or `in-progress`. Agents
+read the archive only when a step says so: the escalation check greps its
+Retro lines, and M-IDs and G-IDs found there are never reused. Under
+`Milestone archive: no` in CLAUDE.md, closed sections stay where they are.
 
 ## Integration branch
 

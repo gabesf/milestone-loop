@@ -98,7 +98,8 @@ alone.
    tag from every other `open` milestone. Never touch the tag of a `done`
    or `in-progress` milestone.
 2. **New groups** get G-IDs continuing from the highest G-ID anywhere in
-   docs/milestones.md, `done` milestones included.
+   docs/milestones.md and docs/milestones-archive.md, `done` milestones
+   included.
 3. In each member's Notes, add `Group: G-XX` followed by prose in
    parentheses: its partners, why they are independent, any hotspot
    warning. E.g. `Group: G-02 (with M-05; disjoint: src/profile vs

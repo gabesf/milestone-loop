@@ -76,7 +76,8 @@ If no `open` milestone exists, say "No open milestone in the queue."
 
 ### 4. Cross-milestone notes
 
-Scan the Notes of ALL milestones (done, in-progress, and open) for items
+Scan the Notes of ALL milestones in docs/milestones.md (done, in-progress,
+and open; the archive is not read) for items
 that reference OTHER milestones — deferred bugs, edge cases noted during
 implementation, scope items moved from one milestone to another, dependency
 warnings. List each one with the source milestone and the target milestone.

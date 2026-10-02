@@ -29,7 +29,10 @@ queue with dependency and coverage validation, and commit the result.
    (warn the user once).
 4. Scan milestones for state:
    - **`done`**: immutable by default. Never reopen, reorder, or edit a closed
-     milestone unless the user explicitly asks and confirms. If the user's
+     milestone unless the user explicitly asks and confirms. Closed
+     sections may live in `docs/milestones-archive.md`: read it only when
+     the revision touches one; their coverage comes from the summary
+     table's `Covers` column. If the user's
      objective requires touching a done milestone, explain the consequence
      (Retro/Deviations records become stale) and get confirmation before
      proceeding.
@@ -93,6 +96,7 @@ queue with dependency and coverage validation, and commit the result.
    - Otherwise: add a line to the header of `docs/milestones.md`, above the
      summary table:
      `Revised (YYYY-MM-DD): <one-line motivation>`
+     One line, never a paragraph: what needs more is an ADR.
 
 ## Closing
 

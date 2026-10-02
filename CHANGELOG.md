@@ -68,6 +68,13 @@ All notable changes to this project are listed here. Versions follow
   (`caffeinate`, 8-hour limit) while agents work, and release it at every
   hand-over or handoff. A sleeping Mac had cut off running agents for
   hours in one group.
+- Milestone archive: `/close-milestone` moves each closed section to
+  `docs/milestones-archive.md`; `docs/milestones.md` keeps the summary
+  table (with `Covers`) and the open work. The escalation check greps both
+  files; G-IDs and M-IDs in the archive are never reused. Existing
+  projects get a one-time offer (archive, delete leftover handoffs,
+  untrack committed raw captures); declining records `Milestone archive:
+  no`. `/replan` records each revision in one line.
 
 ## [0.7.0] - 2026-09-30
 
