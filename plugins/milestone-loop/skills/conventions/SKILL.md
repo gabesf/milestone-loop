@@ -105,8 +105,10 @@ Applies to every message a workflow skill shows the user.
   "Decisions made" (it reaches Deviations at close), list it in the
   closing block, and carry on: the user overrides it while testing. An
   open question holds the whole session, overnight if nobody is there.
-- The workflow's gates stay questions: overview sign-off, plan approval,
-  the green light to close, and anything that touches `main`.
+- These stay questions: the workflow's gates (overview sign-off, plan
+  approval, the green light to close, anything that touches `main`), and
+  the one-time offers and setup questions (a migration, the milestone
+  archive, `Push:`, `Commit mode:`).
 
 ## Legacy projects
 
@@ -201,14 +203,14 @@ mapping), ask the user instead of guessing.
 
 ## Small milestones (`Size: S`)
 
-A milestone tagged `Size: S` in its Notes is one small change: one
-behavior, no engine or algorithm (never with `Tier: top` or `TDD: yes`),
-no open design decision, no schema migration or new dependency, and a
-diff expected to touch a few files. The full workflow costs more than such
-a change, so it runs a light track. `/plan-milestones` and `/replan` set
-the tag; `/next-milestone` may propose it in its plan for an untagged
-milestone that fits, and the approval settles it. No tag: every skill runs
-its full track.
+A milestone tagged `Size: S` in its Notes is small: one behavior, or a
+few small changes asked together (one criterion each); no engine or
+algorithm (never with `Tier: top` or `TDD: yes`), no open design
+decision, no schema migration or new dependency, and a diff expected to
+touch a few files. The full workflow costs more than such a change, so it
+runs a light track. `/plan-milestones` and `/replan` set the tag;
+`/next-milestone` may propose it in its plan, and on approval writes it
+into the milestone's Notes. No tag: every skill runs its full track.
 
 The light track:
 
@@ -224,17 +226,14 @@ The light track:
   project's default size, through the project's capture harness if it has
   one.
 - **Docs.** Only the text the change makes false.
-- **Gate.** The `/hotfix` mini-gate replaces the full gate: one
-  `adversarial-reviewer` (standard tier's model) with the bugs &
-  correctness lens, told to flag scope creep too; one round. The review
-  policy still decides whether it runs.
-- **Testing.** No testing doc. Tier-1 results and the tier-2 steps
-  (usually one or two) go in the hand-over message.
+- **Gate.** `/hotfix`'s mini-gate (its step 6) replaces the full gate,
+  with the reviewer also told to flag scope creep. The review policy
+  still decides whether it runs.
+- **Testing.** No testing doc. Tier-1 results, the tier-2 steps (usually
+  one or two) and the Self-report's unverified claims (as watch points,
+  one line each) go in the hand-over message.
 - **Close.** Deviations as usual; the Retro's data points on one short
   line.
-
-Several small changes the user asks for together are planned as ONE
-`Size: S` milestone, one criterion each, rather than one milestone each.
 
 ## Parallel groups
 
@@ -328,27 +327,6 @@ recommended for team work, when someone else reviews the code, or when
 the repo protects the integration branch or `main`; direct is simpler and
 faster for a solo project. Record the answer in CLAUDE.md so no later
 session asks again.
-
-## Keeping the machine awake
-
-A sleeping machine cuts off every running agent mid-response; each one
-resumes minutes later, and a group loses hours. On macOS (`uname` prints
-`Darwin`), `/next-milestone` and `/next-group` start this once their
-preflight passes, and again whenever work resumes after the user's
-feedback:
-
-```
-nohup caffeinate -is -t 28800 >/dev/null 2>&1 & echo $! > .git/milestone-loop-awake.pid
-```
-
-They stop it whenever they hand over to the user or write a handoff:
-
-```
-kill "$(cat .git/milestone-loop-awake.pid)" 2>/dev/null; rm -f .git/milestone-loop-awake.pid
-```
-
-The 8-hour limit ends it if a session dies. `-s` holds only on AC power:
-on battery a closed lid still sleeps the machine. Other systems: skip.
 
 ## Grill-me
 

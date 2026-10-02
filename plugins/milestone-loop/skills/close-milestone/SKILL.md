@@ -51,21 +51,18 @@ the second human gate of the workflow. The whole close runs in this session.
 7. **Archive offer (once per project).** When `docs/milestones.md` still
    holds sections of `done` milestones, `docs/milestones-archive.md` does
    not exist, and CLAUDE.md has no `Milestone archive:` line, offer to
-   clean up now, in one commit `docs: archive closed milestones` made
-   before the close (branch check first; pushed with the close):
-   - move every `done` section to the archive (conventions, "Milestone
-     archive");
-   - delete handoffs left over from `done` milestones, listed first;
-   - if image files are committed under `docs/` beyond the contact sheets
-     the testing docs link, untrack their folders (`git rm -r --cached`,
-     plus a `.gitignore` entry); the files stay on disk.
-   The user may take any part. On no, record `Milestone archive: no` in
-   CLAUDE.md (the close commit carries it) and never offer again.
+   move every `done` section to the archive (conventions, "Milestone
+   archive") and to delete the handoffs left over from `done` milestones
+   (list them). The work is done at Close step 1, in the working tree, so
+   it lands in this close's commit. Declining the archive records
+   `Milestone archive: no` in CLAUDE.md (the close commit carries it);
+   the offer is never repeated.
 
 ## Compose the record
 
 1. **Deviations** line, when the implementation differed from the plan (scope
-   moved, criteria adjusted, comments deferred to other milestones).
+   moved, criteria adjusted, comments deferred to other milestones, and
+   the handoff's "Decisions made" taken on the user's behalf).
    "None" is a valid entry; silence is not — future sessions rely on this
    being trustworthy.
 2. **Retro:** line with three data points: (a) what the adversarial gate
@@ -75,7 +72,8 @@ the second human gate of the workflow. The whole close runs in this session.
    by CLAUDE.md policy, 1 or 2 otherwise). "None / none / 1 round" and
    "n/a / none / 0 rounds (gate skipped)" are valid; omitting the line is
    not. A `Size: S` milestone keeps the three data points to one short
-   line. If this session did not run `/next-milestone` for the milestone
+   line, and has no testing doc to reconstruct from: use the handoff and
+   the `wip(M-XX)` commit. If this session did not run `/next-milestone` for the milestone
    (fresh session after a handoff), reconstruct (a) and (c) from
    `docs/testing/M-XX.md`'s "Watch points", `docs/handoff/M-XX.md` and
    the `wip(M-XX)` commit, and ask the user for (b) — never invent a Retro.
@@ -91,9 +89,9 @@ the second human gate of the workflow. The whole close runs in this session.
    "visual bug the gate missed" recurring), suggest a line that would
    prevent it (a review-lens hint, a testing-doc rule, a build-time check)
    for `docs/guidelines/checkpoint-checklist.md` — create it and link it
-   from CLAUDE.md's doc index if missing. CLAUDE.md gets a rule only when
-   every agent needs it on every call: it is loaded into all of them. The
-   user decides; if yes, apply it now so the commit picks it up.
+   from CLAUDE.md's doc index if missing; implementers and reviewers read
+   it. CLAUDE.md gets a rule only when every agent needs it. The user
+   decides; if yes, apply it now so the commit picks it up.
    **CLAUDE.md size.** If CLAUDE.md is over 15 KB, say so and propose what
    to move out: queue status and history (docs/milestones.md has them),
    dated lessons (to the checklist). The user decides; apply now if yes.
@@ -107,18 +105,20 @@ the second human gate of the workflow. The whole close runs in this session.
    formatting. Then, unless CLAUDE.md says `Milestone archive: no`, move
    its whole section to the end of `docs/milestones-archive.md` (create it
    with a `# Milestones archive` heading and add the link under the
-   summary table, as the conventions' "Milestone archive" section says);
-   the table row stays, marked `done`.
-   **Metrics.** Then append one line to `docs/metrics.jsonl` (create it if
-   missing) with the output of `python3 <plugin>/scripts/measure-sessions.py
-   "<project root>" --latest --jsonl --milestone M-XX` (group mode:
-   `--milestone G-XX`), where `<plugin>` is `../..` from this skill's base
-   directory. It reads this session's transcripts and prints one JSON line:
-   waits on the user and on subagents, active minutes per role,
-   implementer calls, the largest context, capture minutes, questions to
-   the user. If the script is missing or fails (another host, no
-   transcripts), say so in one line and go on: metrics never block a close,
-   and they never go into the Retro.
+   summary table, as the conventions' "Milestone archive" section says;
+   apply an accepted archive offer here too); the table row stays, marked
+   `done`. If the milestone carries a `Group:` tag and other members of
+   that group are still `open` (it ran alone), remove the tag from them:
+   that group can no longer run as one.
+   **Metrics.** Then append the output of `python3
+   <plugin>/scripts/measure-sessions.py "<project root>" --jsonl
+   --milestone M-XX --active-since "<author date of the first wip(M-XX)
+   commit>"` to `docs/metrics.jsonl` (create it if missing), where
+   `<plugin>` is `../..` from this skill's base directory (group mode:
+   `--milestone G-XX` and the `wip(group): start` commit's date; no `wip`
+   commit: `--latest`). If the script is missing or fails, say so in one
+   line and go on: metrics never block a close, and they never go into
+   the Retro.
 2. **Handoff deletion.** If `docs/handoff/M-XX.md` exists, delete it (and
    `docs/handoff/` if it is then empty). Stage with `git add -A` so the
    deletion is in the commit.
@@ -214,7 +214,8 @@ Group mode (Preflight 1) runs the same Close steps with these changes:
   criteria and Deviations.
 - **Step 6:** `git log --oneline` shows one `M-XX:` commit per member
   not `dropped`, in queue order, and no `wip(`; each of those members
-  shows `done` with both lines.
+  shows `done` in the summary table, and its section (in the archive,
+  unless `Milestone archive: no`) has both lines.
 
 ## Project completion — updating `main`
 

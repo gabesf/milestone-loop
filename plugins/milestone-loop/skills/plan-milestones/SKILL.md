@@ -130,9 +130,7 @@ labels"):
 - **Covers:** R-01, R-03
 - **Acceptance criteria:** written NOW, before implementation; short,
   verifiable statements of what must be observably true. Settle design
-  parameters here when you can; one left open (a position or size to be
-  found) is named as open, and `/next-milestone` measures the options
-  before its plan.
+  parameters here when you can; name one left open as open.
 - **Notes:** dependencies on other milestones, risks, anything relevant.
 - **Docs:** relative links to the `docs/systems|concepts|guidelines` files
   this milestone touches — the implementing agent reads these first.
@@ -228,10 +226,8 @@ enforce red-green TDD — a failing test before the code for each engine
 behavior — instead of the default "write cheap automated checks" policy.
 The tag is set here at planning time, not decided per-session.
 
-**Small milestones.** Tag `Size: S` on milestones that fit the
-conventions' "Small milestones" definition, and write their criteria as
-that section says: behavior only. Fold small changes into one `Size: S`
-milestone rather than giving each its own.
+**Small milestones.** Tag `Size: S` where the conventions' "Small
+milestones" definition fits, and write those criteria as it says.
 
 **Parallel groups.** Once the milestones are drafted, read
 `../find-parallel/SKILL.md` and apply its Analysis section to the whole

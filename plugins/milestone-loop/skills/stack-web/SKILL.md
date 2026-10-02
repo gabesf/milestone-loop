@@ -30,7 +30,8 @@ force as the invoking skill's own rules.
     viewport sizes in a headless browser and writes one downscaled JPEG
     contact sheet, with a port option so parallel members don't collide;
   - raw captures in a git-ignored folder.
-  Record the command in CLAUDE.md.
+  Record the command in CLAUDE.md. Existing projects get the harness only
+  when the user agrees.
 - **DOM test environment.** When the app has UI logic, the test setup
   includes a DOM environment (e.g. happy-dom or jsdom), so a UI behavior
   gets a plain test instead of a hand-built harness.
@@ -63,10 +64,9 @@ force as the invoking skill's own rules.
   install/start Docker before proceeding — pushing untested migrations to the
   remote project is not acceptable. The remote push happens only after the
   local dry-run succeeds.
-- **Captures.** Through the harness, only what a criterion changes, at
-  the sizes it names (none named: one default size). One contact sheet
-  per milestone goes in the testing doc; raw captures stay in the
-  git-ignored folder and are never committed.
+- **Captures** (with the harness): one contact sheet per milestone goes
+  in the testing doc; raw captures stay in the harness's git-ignored
+  folder.
 - **Mobile testing (PWA projects).** When CLAUDE.md records `PWA: yes`, the
   manual test script (`docs/testing/M-XX.md`) must include a step for
   iOS Safari / PWA testing: open the app on an iPhone (or iOS Simulator in

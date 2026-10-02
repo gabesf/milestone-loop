@@ -33,9 +33,9 @@ Rules of engagement:
   a finding.
 - No pedantry: skip style nits, things a linter/compiler already catches,
   and hypotheticals the system cannot actually reach.
-- Docs and comments: flag only a statement that is false about the code.
-  Wording, and doc updates the workflow writes after the review, are not
-  findings.
+- Docs and comments: flag a statement that is false about the code, and
+  leftovers (TODOs, commented-out code) under the leftovers lens. Wording,
+  and doc updates the workflow writes after the review, are not findings.
 
 Return your findings as a structured list, most severe first. For each:
 `file:line` — one-sentence defect statement; evidence; severity

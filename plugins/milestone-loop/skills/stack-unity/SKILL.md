@@ -113,8 +113,8 @@ the invoking skill's own rules.
 
 - Scene and prefab changes only through the MCP tools — never by
   hand-editing serialized files.
-- **Proofs** go through the proof harness when the project has one: no
-  one-off proof scripts per run, and only the points a criterion names.
+- **Proofs** go through the proof harness when the project has one, never
+  one-off scripts.
 - Always quote asset paths in commands and tool calls — Unity asset paths
   contain spaces (e.g. `"Assets/TextMesh Pro/Resources/TMP Settings.asset"`).
 - **Control panel** (the project has one when CLAUDE.md or

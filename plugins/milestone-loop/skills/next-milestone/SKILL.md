@@ -79,18 +79,34 @@ Two rules run through every section:
    that don't state it. Load the stack reference as its "Stack reference"
    section says and apply its `next-milestone` sections — toolchain checks
    run NOW, before any implementation work.
-7. Keep the machine awake as the conventions' "Keeping the machine awake"
-   section says.
+7. Keep the machine awake ("Keeping the machine awake" below).
+
+## Keeping the machine awake
+
+A sleeping machine cuts off every running agent mid-response. On macOS
+(`uname` prints `Darwin`), start this after Preflight and whenever work
+resumes after the user's feedback; it does nothing if one is running:
+
+```
+P="$(git rev-parse --git-dir)/milestone-loop-awake.pid"; kill -0 "$(cat "$P" 2>/dev/null)" 2>/dev/null || { nohup caffeinate -is -t 28800 >/dev/null 2>&1 & echo $! > "$P"; }
+```
+
+Stop it at every hand-over to the user and every handoff:
+
+```
+P="$(git rev-parse --git-dir)/milestone-loop-awake.pid"; kill "$(cat "$P" 2>/dev/null)" 2>/dev/null; rm -f "$P"
+```
+
+The 8-hour limit ends it if a session dies. Other systems: skip.
 
 ## Plan
 
 1. Read the target milestone — acceptance criteria, covered requirements,
    notes — and related decision records in docs/decisions/.
-   **Open decisions first.** If a criterion leaves a design parameter to
-   be found during implementation (a position, size, color, timing,
-   framing) or says what happens when something doesn't fit ("if X
-   doesn't fit → BLOCKED", "options to the user"), settle it before the
-   plan. Launch one spike subagent (standard tier's model) that tries the
+   **Open decisions first.** If a criterion leaves a visual parameter to
+   be found during implementation (a position, size, color, framing) or
+   says what happens when something doesn't fit ("if X doesn't fit →
+   BLOCKED"), settle it before the plan. Launch one spike subagent (standard tier's model) that tries the
    options against the running app — through runtime parameters or a
    scratch worktree, leaving the main tree untouched — and returns ONE
    composite image with the options side by side and labeled, plus the
@@ -108,11 +124,9 @@ Two rules run through every section:
    tier if tagged (the user can still switch with `/model` before
    approving). Keep the plan to one screen (conventions, "Talking to the
    user"): detail goes into the brief after approval. A milestone tagged
-   `Size: S`, or one that fits the conventions' "Small milestones"
-   definition (propose the tag; approval settles it), gets a plan of a few
-   lines and runs the light track that section describes: it replaces
-   the matching parts of "Delegated implementation", "Quality gates",
-   the gate and "Closing" below. CLOSE with
+   (or proposed) `Size: S` gets a plan of a few lines and runs the
+   conventions' "Small milestones" light track, which overrides the
+   sections below where it speaks. CLOSE with
    the implementer-model question: "Implementer model? (default: X)" where
    X is the default implementer model from the conventions'
    "Model tiers" section. The answer is an alias or ID accepted by the
@@ -120,7 +134,8 @@ Two rules run through every section:
    profile's business). Never accept one weaker than the model floor. An
    approval that doesn't mention the model means the default. Write
    nothing before approval.
-3. Mark the milestone `in-progress` in docs/milestones.md.
+3. Mark the milestone `in-progress` in docs/milestones.md (and add
+   `Size: S` to its Notes when the approval settled it).
 
 ## Delegated implementation
 
@@ -128,7 +143,10 @@ Implementers are plain `Agent` subagents (general purpose, `model` = the
 alias chosen at approval). The split keeps the token-heavy loop on the
 implementer's model and its noise (file reads, build logs) out of this context.
 Do not undo that by reading implementation files "to keep up" — read a
-file only to verify a specific claim or finding.
+file only to verify a specific claim or finding. Every subagent's
+description starts with the unit and its role — `M-XX implementer`,
+`M-XX fix N`, `M-XX review: <lens>`, `M-XX spike`, `M-XX tier-1` — so
+the session metrics can tell them apart.
 
 1. **Write the brief** into `docs/handoff/M-XX.md` (structure in
    "Handoff") — the same file the inter-session handoff uses, so a session
@@ -147,8 +165,7 @@ file only to verify a specific claim or finding.
    gates" below; NEVER commit, stage, push, or touch docs/milestones.md;
    keep its context lean — builds and tests with a quiet reporter (a
    summary; full output only for failures, through `tail`), files read by
-   excerpt (`offset`/`limit`, `grep -n`) rather than whole, never
-   docs/milestones.md (the brief holds what it needs), screenshots
+   excerpt (`offset`/`limit`, `grep -n`) rather than whole, screenshots
    downscaled before opening and one contact sheet over many images;
    before reporting, go through `docs/guidelines/checkpoint-checklist.md`
    if the project has one; return a final report with exactly:
@@ -208,9 +225,8 @@ file only to verify a specific claim or finding.
 ## Adversarial review gate (automatic, before any handoff)
 
 When implementation is verified green, run this gate before the user sees
-anything — the user only tests code that survived it. Under `Size: S`,
-make the checkpoint (step 1), then run the mini-gate the conventions'
-"Small milestones" section names instead of steps 2–6.
+anything — the user only tests code that survived it. Under `Size: S`:
+the checkpoint (step 1), then the light track's mini-gate.
 
 **Policy.** CLAUDE.md's `Review gate:` line (from `/plan-milestones`):
 `all`, `tagged` (only milestones tagged `Adversarial gate: yes`), or
@@ -231,8 +247,10 @@ informal reviews.
    `adversarial-reviewer` agent on the standard tier's model (if
    unavailable, plain subagents on the same model). Each
    gets ONLY the diff (`git show HEAD -- . ':!docs/handoff'`), the
-   acceptance criteria and CLAUDE.md (already in its context on hosts that
-   load it into subagents; then don't paste it) — never this session's reasoning,
+   acceptance criteria, CLAUDE.md (already in its context on hosts that
+   load it into subagents; then don't paste it) and the project's
+   `docs/guidelines/checkpoint-checklist.md` if it exists — never this
+   session's reasoning,
    which the handoff file holds — and is told to ATTACK the change and
    not to open `docs/handoff/`. One lens each:
    - **Bugs & correctness**: broken edge cases, violated invariants from
@@ -260,8 +278,9 @@ informal reviews.
      (runtime, integrations, data) → never dismissed: they become the
      testing doc's "Watch points";
    - docs and comments → real only when the text states something false
-     about the code. Fix them in one batch, here or with the next fix;
-     they never count as a code change for step 6.
+     about the code (leftovers such as TODOs and commented-out code stay
+     the leftovers lens's job). Fix them in one batch, here or with the
+     next fix.
    Fixes go to a fresh implementer (step 5 of "Delegated
    implementation") and must be MINIMAL: reviewers invent
    hypotheticals by design, and a fix more complex than the problem it
@@ -322,9 +341,8 @@ filling up, external blocker, user-requested pause):
 
 ## Closing — handing over for manual testing
 
-Once the gate is passed and verified green (under `Size: S`: no testing
-doc; run the tier-1 steps of step 2 and put their results and the tier-2
-steps in the hand-over message):
+Once the gate is passed and verified green (under `Size: S`, the light
+track's Testing rule replaces the testing doc):
 
 1. **Write `docs/testing/M-XX.md`** in two tiers. The agent does
    everything it possibly can; the user does only what is impossible for
@@ -346,7 +364,8 @@ steps in the hand-over message):
      the step that exercises it — test these hardest. "None" if empty;
      never omitted.
    - Any section the stack reference's `next-milestone / testing doc`
-     section adds.
+     section adds, and any testing rule in the project's
+     `docs/guidelines/checkpoint-checklist.md`.
 2. **Execute tier 1 now**, against the real running app — the environment
    the user would test in (the deploy, or the Editor/build they'd open).
    Not optional, not a dry run.
@@ -374,13 +393,13 @@ steps in the hand-over message):
      asking.
 3. **Hand over in chat.** REPRODUCE tier 2 inline — full "How to test"
    steps and expected results; the user must not need to open a file.
-   Then at most three lines: the testing doc's path; tier 1 (steps
-   passed, or what failed and was fixed); the gate (found, fixed,
-   dismissed). Details stay in the testing doc. Add any reminder the stack
-   reference's testing-doc section asks for, then the closing block
-   (conventions, "Talking to the user"), decisions made on the user's
-   behalf first so they can be checked while testing. Then STOP: no
-   further commits, never push, don't start the next milestone.
+   Then at most four lines: the testing doc's path; tier 1 (steps passed,
+   or what failed and was fixed); the gate (found, fixed, dismissed); what
+   the Self-report left unverified and which step covers it. Details stay
+   in the testing doc. Add any reminder the stack reference's testing-doc
+   section asks for, then the closing block (conventions, "Talking to the
+   user"). Then STOP: no further commits, never push, don't start the
+   next milestone.
 4. **Triage the user's comments** together (plus the stack reference's
    `next-milestone / feedback triage` section, if it has one):
    - **Covered by a future milestone** → confirm the M-ID, note it in that

@@ -77,7 +77,8 @@ If no `open` milestone exists, say "No open milestone in the queue."
 ### 4. Cross-milestone notes
 
 Scan the Notes of ALL milestones in docs/milestones.md (done, in-progress,
-and open; the archive is not read) for items
+and open), and grep docs/milestones-archive.md, if it exists, for the IDs
+of milestones still open, for items
 that reference OTHER milestones — deferred bugs, edge cases noted during
 implementation, scope items moved from one milestone to another, dependency
 warnings. List each one with the source milestone and the target milestone.
@@ -89,7 +90,7 @@ If none exist, say "No notes between milestones."
 If `docs/metrics.jsonl` exists (written by `/close-milestone`), show its
 last 5 lines as a table: milestone, date, wait on the user, implementer
 active minutes (`implementer` + `fix`), implementer calls, capture
-minutes, questions to the user, largest context. One line under it says
+minutes, AskUserQuestion calls, largest context. One line under it says
 what moved most against the previous rows. No file: skip the section.
 
 ### 6. Other handoffs

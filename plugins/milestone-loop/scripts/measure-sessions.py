@@ -14,9 +14,12 @@ role, active minutes, model calls, context size, capture time and images.
 
 Usage:
   measure-sessions.py <project dir> [--session <id prefix>] [--since YYYY-MM-DD]
-  measure-sessions.py <project dir> --latest --jsonl --milestone M-07
-      prints one JSON line for the newest session (what /close-milestone appends
-      to docs/metrics.jsonl).
+  measure-sessions.py <project dir> --jsonl --milestone M-07 --active-since <ISO time>
+      prints one JSON line summing every session active since that time (what
+      /close-milestone appends to docs/metrics.jsonl); --latest takes only the
+      newest session instead.
+Subagent roles come from their descriptions, which the workflow starts with
+the unit and the role ("M-07 implementer", "M-07 review: bugs", ...).
 Transcripts live in $CLAUDE_CONFIG_DIR/projects (default ~/.claude/projects);
 --root overrides it.
 """
@@ -30,7 +33,8 @@ from datetime import datetime
 
 IDLE = 300  # seconds without events before a gap counts as a wait
 
-CAPTURE = re.compile(r'captur|screenshot|preview|chrome|Chrome|cdp|playwright|puppeteer|manage_editor|\.mjs')
+CAPTURE = re.compile(r'captur|screenshot|preview|chrome|cdp|playwright|puppeteer|manage_editor', re.I)
+CAPTURE_TOOLS = re.compile(r'chrome|screenshot|manage_editor|playwright|puppeteer', re.I)
 TEST = re.compile(r'pnpm test|npm test|vitest|jest|pytest|run_tests|EditMode|PlayMode|dotnet test')
 
 
@@ -49,15 +53,15 @@ def text_of(content):
 def role_of(meta):
     kind = meta.get('agentType', '')
     d = meta.get('description', '')
-    if re.search(r'fix|correç|finish|apply', d, re.I) and 'adversarial' not in kind:
-        return 'fix'
-    if 'adversarial' in kind or re.search(r'gate|review|revis|lens|lente', d, re.I):
+    if 'adversarial' in kind or re.search(r'\breview|\blens\b|\blente\b|\brevis', d, re.I):
         return 'reviewer'
-    if re.search(r'^(Implement|Implementar)', d):
+    if re.search(r'\bfix|correç|\bfinish\b|\bapply\b', d, re.I):
+        return 'fix'
+    if re.search(r'implement', d, re.I):
         return 'implementer'
-    if re.search(r'tier|tester|captur|spike', d, re.I):
+    if re.search(r'\btier[- ]?1|tester|captur|\bspike\b', d, re.I):
         return 'test/capture'
-    if kind in ('Explore', 'Plan') or re.search(r'^(Map|Survey|Inventory|Find)', d):
+    if kind in ('Explore', 'Plan') or re.search(r'^(Map|Survey|Inventory|Find)\b', d):
         return 'mapping'
     return 'other'
 
@@ -94,8 +98,8 @@ def analyze(path, main):
             waits['subagents'] += gap
         elif pending:
             continue  # a long tool call is work
-        elif main and b.get('type') in ('user', 'attachment') and not tb.startswith('<'):
-            waits['user'] += gap
+        elif main:
+            waits['user'] += gap  # an idle orchestrator waits on the user
         else:
             waits['other'] += gap
     calls = {}
@@ -115,9 +119,15 @@ def analyze(path, main):
                                       + u.get('cache_creation_input_tokens', 0))
             for blk in c if isinstance(c, list) else []:
                 if blk.get('type') == 'tool_use':
-                    questions += blk['name'] == 'AskUserQuestion'
-                    cmd = json.dumps(blk.get('input', {}))
-                    kind = 'capture' if CAPTURE.search(cmd) else 'test' if TEST.search(cmd) else 'other'
+                    name = blk['name']
+                    questions += name == 'AskUserQuestion'
+                    cmd = blk.get('input', {}).get('command', '') if name == 'Bash' else ''
+                    if CAPTURE_TOOLS.search(name) or CAPTURE.search(cmd):
+                        kind = 'capture'
+                    elif TEST.search(cmd) or 'run_tests' in name:
+                        kind = 'test'
+                    else:
+                        kind = 'other'
                     uses[blk['id']] = (ts(x['timestamp']), kind)
         for blk in c if isinstance(c, list) else []:
             if isinstance(blk, dict) and blk.get('type') == 'tool_result' and blk.get('tool_use_id') in uses:
@@ -149,22 +159,29 @@ def session(base, sid):
     return main, sorted(subs, key=lambda s: s['start'])
 
 
-def jsonl_line(sid, milestone, main, subs):
+def jsonl_line(milestone, sessions):
+    """One JSON line summing (sid, main, subs) sessions."""
     mins = lambda s: round(s / 60, 1)
+    mains = [m for _, m, _ in sessions]
+    subs = [s for _, _, ss in sessions for s in ss]
     by_role = defaultdict(list)
     for s in subs:
         by_role[s['role']].append(s)
     impl = by_role['implementer'] + by_role['fix']
+    wait = lambda k: sum(m['waits'].get(k, 0) for m in mains)
     return json.dumps(dict(
-        milestone=milestone, session=sid[:8], date=datetime.fromtimestamp(main['start']).strftime('%Y-%m-%d'),
-        model=main['model'], wall_min=mins(main['wall']), orchestrator_active_min=mins(main['active']),
-        wait_user_min=mins(main['waits'].get('user', 0)), wait_subagents_min=mins(main['waits'].get('subagents', 0)),
-        sleep_min=mins(sum(s['waits'].get('sleep', 0) for s in subs) + main['waits'].get('sleep', 0)),
+        milestone=milestone, sessions=[sid[:8] for sid, _, _ in sessions],
+        date=datetime.fromtimestamp(min(m['start'] for m in mains)).strftime('%Y-%m-%d'),
+        model=mains[-1]['model'], wall_min=mins(sum(m['wall'] for m in mains)),
+        orchestrator_active_min=mins(sum(m['active'] for m in mains)),
+        wait_user_min=mins(wait('user')), wait_subagents_min=mins(wait('subagents')),
+        sleep_min=mins(wait('sleep') + sum(s['waits'].get('sleep', 0) for s in subs)),
         active_min_by_role={r: mins(sum(s['active'] for s in v)) for r, v in sorted(by_role.items())},
         implementer_steps=sum(s['steps'] for s in impl), implementer_runs=len(impl),
-        reviewer_runs=len(by_role['reviewer']), max_context_k=round(max([main['ctx_max']] + [s['ctx_max'] for s in subs]) / 1000),
+        reviewer_runs=len(by_role['reviewer']),
+        max_context_k=round(max(m['ctx_max'] for m in mains + subs) / 1000),
         capture_min=mins(sum(s['tools'].get('capture', 0) for s in subs)), images=sum(s['images'] for s in subs),
-        user_questions=main['questions'],
+        ask_user_calls=sum(m['questions'] for m in mains),
     ), ensure_ascii=False)
 
 
@@ -195,6 +212,7 @@ def main():
     ap.add_argument('--session')
     ap.add_argument('--since')
     ap.add_argument('--latest', action='store_true')
+    ap.add_argument('--active-since', help='ISO time; with --jsonl, sum every session active since then')
     ap.add_argument('--jsonl', action='store_true')
     ap.add_argument('--milestone', default='')
     a = ap.parse_args()
@@ -205,17 +223,28 @@ def main():
     if a.latest:
         files = files[-1:]
     since = datetime.fromisoformat(a.since).timestamp() if a.since else 0
+    active_since = datetime.fromisoformat(a.active_since).timestamp() if a.active_since else None
+    picked = []
     for f in files:
         sid = os.path.basename(f)[:-6]
         if a.session and not sid.startswith(a.session):
             continue
-        main_s, subs = session(base, sid)
-        if not main_s or main_s['start'] < since or (not subs and main_s['steps'] < 20 and not a.latest):
+        if active_since is not None and os.path.getmtime(f) < active_since:
             continue
-        if a.jsonl:
-            print(jsonl_line(sid, a.milestone, main_s, subs))
-        else:
-            report(sid, main_s, subs)
+        main_s, subs = session(base, sid)
+        if not main_s or main_s['start'] < since:
+            continue
+        if active_since is not None and main_s['start'] + main_s['wall'] < active_since:
+            continue
+        if not subs and main_s['steps'] < 20 and not (a.latest or a.jsonl):
+            continue
+        picked.append((sid, main_s, subs))
+    if a.jsonl:
+        if picked:
+            print(jsonl_line(a.milestone, picked))
+        return
+    for sid, main_s, subs in picked:
+        report(sid, main_s, subs)
 
 
 if __name__ == '__main__':

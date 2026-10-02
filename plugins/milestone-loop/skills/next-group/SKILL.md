@@ -33,8 +33,9 @@ the overrides below: "Delegated implementation", "Quality gates" and
 "Adversarial review gate". Its "Closing" applies to the group as a whole
 (see "Testing"). Its Preflight, Plan and Handoff sections do not apply:
 this skill's own replace them. A member tagged `Size: S` runs the
-conventions' "Small milestones" light track for its implementation and
-gate; the group's testing stays one script.
+conventions' "Small milestones" light track for its tests, runtime check
+and gate, but an implementer in its worktree still writes its code; the
+group's testing stays one script.
 
 Three more rules run through every section:
 
@@ -99,19 +100,19 @@ Three more rules run through every section:
    member that no longer fits, propose running without it; with the
    user's OK, continue without it. A group reduced to one member: stop and
    point to `/next-milestone`.
-8. Keep the machine awake as the conventions' "Keeping the machine awake"
-   section says.
+8. Keep the machine awake as `/next-milestone`'s "Keeping the machine
+   awake" section says.
 
 ## Plan — one approval for the group
 
 1. Read each member's acceptance criteria, covered requirements, notes and
    related decision records in docs/decisions/. Run `/next-milestone`
-   Plan 1's open-decision spikes for every member that needs one, all in
-   one message.
+   Plan 1's open-decision spikes for every member that needs one: all in
+   one message, or one at a time when the stack has a single runtime (one
+   Editor, one device).
 2. Present each member's plan as `/next-milestone` Plan 2 describes it,
-   kept compact: what is built and which files it touches, how each
-   acceptance criterion is met, and its tier. No per-member summary here:
-   the summaries go in the closing table. Then the group block:
+   without its two-line summary (the summaries go in the closing table).
+   Then the group block:
    - a footprint table (member → files and directories) showing the
      members don't overlap, and how each shared hotspot will be merged;
    - the merge order: queue order;
@@ -172,6 +173,8 @@ member moves: it is how a resumed session knows where it is, and what
 2. **Launch every implementer in ONE message** so they run at the same
    time. Prompt as `/next-milestone` "Delegated implementation" step 2
    says, plus: the worktree discipline above; the brief's main-tree path;
+   the port this session assigns to the member, when the stack reference
+   allows a preview server in worktrees;
    first run the worktree setup (the stack reference's `next-group`
    section, or CLAUDE.md's install step); build and test only inside the
    worktree, leaving out what that `next-group` section defers to the
