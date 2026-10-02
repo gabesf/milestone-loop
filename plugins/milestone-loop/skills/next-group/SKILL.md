@@ -197,7 +197,7 @@ member moves: it is how a resumed session knows where it is, and what
      diff <Base> HEAD -- <no-docs>` (round 2: `git -C <worktree> diff HEAD
      -- <no-docs>`) and to read files under the worktree;
    - every git command of the gate, the rollback included, runs as `git -C
-     <worktree>`; fixes go to an implementer in that worktree;
+     <worktree>`; fixes go to a fresh implementer in that worktree;
    - once the last round is verified green, commit its fixes in the
      worktree as `wip(M-XX): gate fixes` (nothing changed: no commit);
    - record the member's line under "Gate results": rounds, what was

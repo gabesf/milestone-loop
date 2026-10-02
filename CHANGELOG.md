@@ -37,6 +37,12 @@ All notable changes to this project are listed here. Versions follow
   hand-over keeps tier 2 in full but summarizes tier 1 and the gate in
   three lines. `/plan-milestones` presents a summary with links instead
   of the documents.
+- Every fix round (gate, feedback, BLOCKED) goes to a fresh implementer
+  with the brief, the diff command and the findings, never one resumed
+  with SendMessage — resumed implementers reached 600–970k of context and
+  stalled. Implementers keep their context lean: quiet test reporters,
+  files read by excerpt, never docs/milestones.md, downscaled screenshots.
+  The prompt no longer re-reads CLAUDE.md where the host already loads it.
 
 ## [0.7.0] - 2026-09-30
 

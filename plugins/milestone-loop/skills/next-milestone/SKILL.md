@@ -139,10 +139,16 @@ file only to verify a specific claim or finding.
    for subagents), whether `TDD: yes` applies, and the scope rule. Commit
    nothing yet.
 2. **Launch the implementer** — one per milestone by default. Prompt: read
-   the handoff file, CLAUDE.md and the stack reference's quality-gates
-   section FIRST; implement "Remaining" in order under "Quality gates"
-   below; NEVER commit, stage, push, or touch docs/milestones.md; return a
-   final report with exactly:
+   the handoff file and the stack reference's quality-gates section FIRST
+   (CLAUDE.md too, unless the host already loads it into every subagent,
+   as Claude Code does); implement "Remaining" in order under "Quality
+   gates" below; NEVER commit, stage, push, or touch docs/milestones.md;
+   keep its context lean — builds and tests with a quiet reporter (a
+   summary; full output only for failures, through `tail`), files read by
+   excerpt (`offset`/`limit`, `grep -n`) rather than whole, never
+   docs/milestones.md (the brief holds what it needs), screenshots
+   downscaled before opening and one contact sheet over many images;
+   return a final report with exactly:
    - **Done**: what was built, with file paths.
    - **Gates**: the exact build/test commands run and their results.
    - **Self-report**: (a) what it claims works but did not verify (not
@@ -163,10 +169,16 @@ file only to verify a specific claim or finding.
    then launch a fresh implementer from the current state.
 4. **On return:** verify (the rule above), then update "Done"/"Remaining"
    and keep the Self-report — the gate and the testing doc use it.
-5. **Fixes are delegated too.** Every later code change — gate fixes,
-   fixes from the user's feedback — goes to an implementer on the same
-   model with the finding list verbatim and the gate's minimal-fix rule.
-   Only exception: one obvious edit in one file may be applied here.
+5. **Fixes are delegated too, each round to a FRESH implementer.** Every
+   later code change — gate fixes, fixes from the user's feedback — goes
+   to a new implementer on the same model, never one resumed with
+   SendMessage: a resumed implementer drags its whole context into every
+   step, and long runs stall. Prompt: the brief's path, the command for
+   the diff so far, the finding list verbatim, the gate's minimal-fix rule
+   and the context rules of step 2. A running implementer may get a
+   one-line clarification of its current task; a new round is a new
+   implementer. Only exception: one obvious edit in one file may be
+   applied here.
 
 ## Quality gates (non-negotiable during implementation)
 
@@ -213,7 +225,8 @@ informal reviews.
    `adversarial-reviewer` agent on the standard tier's model (if
    unavailable, plain subagents on the same model). Each
    gets ONLY the diff (`git show HEAD -- . ':!docs/handoff'`), the
-   acceptance criteria and CLAUDE.md — never this session's reasoning,
+   acceptance criteria and CLAUDE.md (already in its context on hosts that
+   load it into subagents; then don't paste it) — never this session's reasoning,
    which the handoff file holds — and is told to ATTACK the change and
    not to open `docs/handoff/`. One lens each:
    - **Bugs & correctness**: broken edge cases, violated invariants from
@@ -240,7 +253,8 @@ informal reviews.
    - Self-report unverified claims no reviewer could see from the diff
      (runtime, integrations, data) → never dismissed: they become the
      testing doc's "Watch points".
-   Fixes go to an implementer and must be MINIMAL: reviewers invent
+   Fixes go to a fresh implementer (step 5 of "Delegated
+   implementation") and must be MINIMAL: reviewers invent
    hypotheticals by design, and a fix more complex than the problem it
    removes is itself overengineering. If a fix breaks something and the
    cause isn't quickly found, roll back to the checkpoint (`git checkout
