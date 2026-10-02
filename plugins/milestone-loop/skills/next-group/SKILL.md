@@ -265,8 +265,11 @@ testing doc is `docs/testing/G-XX.md`; the watch points come from "Gate
 results".
 
 1. **Tier 1 has no cap.** For each member, one tester subagent on the
-   standard tier's model, one member at a time: there is one browser and
-   one Editor. It gets the member's tier-1 steps, its criteria, the
+   standard tier's model. Testers run at the same time when each can drive
+   its own browser (a headless browser through the project's harness, on
+   a port this session assigns to its member); one at a time when the
+   stack has a single runtime (one Editor, one device, the user's own
+   browser). It gets the member's tier-1 steps, its criteria, the
    environment to test in (from CLAUDE.md), and the tools `/next-milestone`
    Closing step 2 names for this stack, and returns only the "Verified by
    the agent" record: each step, what was driven, what was observed,

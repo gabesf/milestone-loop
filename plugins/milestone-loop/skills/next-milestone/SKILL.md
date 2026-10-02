@@ -195,6 +195,9 @@ file only to verify a specific claim or finding.
   edge cases), not implementation details, and follow CLAUDE.md's test
   guidelines. Where a behavior has no programmatic assertion (e.g. visual
   only), document why in the testing doc and cover it manually.
+- **Runtime checks** go through the project's harness when it has one
+  (the stack reference's `plan-milestones` section plans it), and cover
+  only what a criterion changes, at the sizes or points it names.
 - Respect CLAUDE.md's editing rules and the stack reference's
   `next-milestone / quality gates` section.
 - Stay inside the milestone's scope. Something broken or needed outside it

@@ -62,6 +62,20 @@ the invoking skill's own rules.
     milestone introduces must be registered in the control panel, never
     hard-coded.
 
+- **Proof harness.** When criteria need Play Mode proof (a behavior at a
+  point of a level, a measurement over a run), plan once an Editor proof
+  harness (e.g. under `Assets/Editor/Proofs/`): jump to a named point
+  (seek to the block or wave, spawn the state) instead of playing up to
+  it; run faster where physics allows (`Time.timeScale` with a fixed
+  timestep); log the values the criteria measure; capture the Game view
+  at a named resolution into one contact sheet. One command runs a proof,
+  for the implementer and the orchestrator alike.
+- **An Editor for the agents (ask once).** By default agents share the
+  user's Editor, so the user's Play session or a modal dialog blocks
+  them. Ask whether agents get their own Editor (a clone of the project,
+  e.g. with ParrelSync, with its own bridge port) and record `Agent
+  editor: <path>` or `Agent editor: none` in CLAUDE.md.
+
 ## next-milestone / bootstrap
 
 - **Project creation.** When the target milestone creates the Unity project,
@@ -99,6 +113,8 @@ the invoking skill's own rules.
 
 - Scene and prefab changes only through the MCP tools — never by
   hand-editing serialized files.
+- **Proofs** go through the proof harness when the project has one: no
+  one-off proof scripts per run, and only the points a criterion names.
 - Always quote asset paths in commands and tool calls — Unity asset paths
   contain spaces (e.g. `"Assets/TextMesh Pro/Resources/TMP Settings.asset"`).
 - **Control panel** (the project has one when CLAUDE.md or
@@ -119,6 +135,10 @@ Tier-1 steps the agent drives itself in Unity projects:
 - The EditMode/PlayMode test runner and batch-mode CLI runs.
 - Prerequisite to ask the user for, if missing: the Editor open with the
   bridge running.
+- With an `Agent editor:` path in CLAUDE.md, drive that Editor. Before
+  entering Play Mode, check the Editor is not already playing or showing
+  a modal dialog; if it is, tell the user in one line at once instead of
+  waiting on it.
 
 ## next-milestone / testing doc
 

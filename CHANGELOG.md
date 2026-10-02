@@ -50,6 +50,15 @@ All notable changes to this project are listed here. Versions follow
   CLAUDE.md, and warns when CLAUDE.md passes 15 KB (it is loaded into every
   agent). `/plan-milestones` keeps queue status and history out of
   CLAUDE.md.
+- Cheaper runtime verification. `stack-web` plans a harness once (direct
+  entry into app states, one capture command writing a downscaled contact
+  sheet, raw captures git-ignored) and a DOM test environment; captures
+  cover only what a criterion changes, at the sizes it names.
+  `stack-unity` plans an Editor proof harness (seek to a point, faster
+  time, logged values, one contact sheet) and asks once whether agents get
+  their own Editor (`Agent editor:`); a busy Editor is reported at once.
+  `/next-group` runs tier-1 testers at the same time when each can drive
+  its own headless browser.
 
 ## [0.7.0] - 2026-09-30
 

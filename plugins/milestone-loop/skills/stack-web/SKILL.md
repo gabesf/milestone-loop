@@ -21,6 +21,19 @@ force as the invoking skill's own rules.
 
 - **PWA question.** Ask whether the project is a PWA. If yes, record
   `PWA: yes` in CLAUDE.md — this controls mobile testing rules later.
+- **Verification harness (any web front end with visual criteria).**
+  Plan it once, in an early milestone, so no milestone pays for it again:
+  - a direct entry into every app state a criterion will capture (a URL
+    parameter or a test hook, e.g. `?state=game-over`), never playing up
+    to the state in real time;
+  - one capture command in `scripts/` that opens a state at named
+    viewport sizes in a headless browser and writes one downscaled JPEG
+    contact sheet, with a port option so parallel members don't collide;
+  - raw captures in a git-ignored folder.
+  Record the command in CLAUDE.md.
+- **DOM test environment.** When the app has UI logic, the test setup
+  includes a DOM environment (e.g. happy-dom or jsdom), so a UI behavior
+  gets a plain test instead of a hand-built harness.
 
 ## next-milestone / bootstrap
 
@@ -50,6 +63,10 @@ force as the invoking skill's own rules.
   install/start Docker before proceeding — pushing untested migrations to the
   remote project is not acceptable. The remote push happens only after the
   local dry-run succeeds.
+- **Captures.** Through the harness, only what a criterion changes, at
+  the sizes it names (none named: one default size). One contact sheet
+  per milestone goes in the testing doc; raw captures stay in the
+  git-ignored folder and are never committed.
 - **Mobile testing (PWA projects).** When CLAUDE.md records `PWA: yes`, the
   manual test script (`docs/testing/M-XX.md`) must include a step for
   iOS Safari / PWA testing: open the app on an iPhone (or iOS Simulator in
@@ -69,7 +86,9 @@ force as the invoking skill's own rules.
   manager, and copy the untracked env files (`.env`, `.env.local`, …) from
   the main tree into the worktree.
 - **Shared resources.** Members work at the same time on one machine, so
-  in a worktree: no dev server and no test that binds a port; only the
+  in a worktree: no dev server and no test that binds a port, except the
+  preview server and headless browser the harness runs on the port this
+  session assigns to that member; only the
   member that adds migrations may use the local Supabase stack
   (`supabase start`, `supabase db reset`, tests against the local
   database); nobody runs `supabase db push`. At the integration check, in
