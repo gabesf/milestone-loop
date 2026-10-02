@@ -86,6 +86,16 @@ the second human gate of the workflow. The whole close runs in this session.
 1. **Docs edit.** In `docs/milestones.md`, set the milestone to `done` and
    add the Deviations and Retro lines under it, matching the file's existing
    formatting.
+   **Metrics.** Then append one line to `docs/metrics.jsonl` (create it if
+   missing) with the output of `python3 <plugin>/scripts/measure-sessions.py
+   "<project root>" --latest --jsonl --milestone M-XX` (group mode:
+   `--milestone G-XX`), where `<plugin>` is `../..` from this skill's base
+   directory. It reads this session's transcripts and prints one JSON line:
+   waits on the user and on subagents, active minutes per role,
+   implementer calls, the largest context, capture minutes, questions to
+   the user. If the script is missing or fails (another host, no
+   transcripts), say so in one line and go on: metrics never block a close,
+   and they never go into the Retro.
 2. **Handoff deletion.** If `docs/handoff/M-XX.md` exists, delete it (and
    `docs/handoff/` if it is then empty). Stage with `git add -A` so the
    deletion is in the commit.

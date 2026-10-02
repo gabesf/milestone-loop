@@ -83,7 +83,15 @@ warnings. List each one with the source milestone and the target milestone.
 
 If none exist, say "No notes between milestones."
 
-### 5. Other handoffs
+### 5. Trend
+
+If `docs/metrics.jsonl` exists (written by `/close-milestone`), show its
+last 5 lines as a table: milestone, date, wait on the user, implementer
+active minutes (`implementer` + `fix`), implementer calls, capture
+minutes, questions to the user, largest context. One line under it says
+what moved most against the previous rows. No file: skip the section.
+
+### 6. Other handoffs
 
 List any files found in `docs/handoff/` that were NOT already shown in
 section 2 (a running group's handoff and its members' briefs count as

@@ -3,6 +3,18 @@
 All notable changes to this project are listed here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `scripts/measure-sessions.py`: measures a project's sessions from the
+  Claude Code transcripts — model calls (de-duplicated), active time
+  versus waits (user, subagents, a resumed agent, a sleeping machine),
+  context size, capture time, images, questions to the user.
+  `/close-milestone` appends one line per milestone or group to
+  `docs/metrics.jsonl` (never to the Retro); `/milestone-status` shows the
+  trend. Baseline in `docs/measurements.md`.
+
 ## [0.7.0] - 2026-09-30
 
 ### Added
