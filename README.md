@@ -21,9 +21,16 @@ each one through the same loop:
   attack the milestone's diff, one lens each: bugs and correctness,
   overengineering and leftovers, scope and project-rule compliance. They
   get the diff, the acceptance criteria and CLAUDE.md, never the author's
-  reasoning. Surviving findings are fixed; at most two rounds. At
-  planning time you choose whether the gate runs on every milestone (the
-  default), only on tagged ones, or on none.
+  reasoning. Surviving findings are fixed; a second round runs only when
+  the fixes changed runtime code. At planning time you choose whether the
+  gate runs on every milestone (the default), only on tagged ones, or on
+  none.
+- **Small changes stay small.** A milestone tagged `Size: S` (one
+  behavior, a few files) runs a light track: behavior-only criteria, one
+  reviewer, at most one capture, no testing doc.
+- **Short messages.** Every step ends with a block of at most five lines:
+  what was decided for you, what needs you, what comes next. Choices that
+  are cheap to undo are made and listed, not asked.
 - **Two-tier testing.** The agent drives every test step it can (browser,
   API, database, stack tooling) and records what it observed. You get only
   the steps that need a human: a real device, a physical action, a
@@ -31,6 +38,10 @@ each one through the same loop:
 - **Handoff.** A milestone that outlives its session leaves a handoff file
   (done, remaining, decisions, gate status, next step). The next session
   resumes from it instead of re-reading the scope from scratch.
+- **Measured.** Each close appends the session's numbers (active time per
+  role, waits, captures, questions to you) to `docs/metrics.jsonl`;
+  `/milestone-status` shows the trend. Closed milestones move to
+  `docs/milestones-archive.md`, so the plan holds only open work.
 
 ## Workflow
 
