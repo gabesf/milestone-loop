@@ -11,7 +11,7 @@
       "name": "milestone-loop",
       "description": "Milestone workflow for Claude Code: app-overview, plan-milestones, find-parallel, next-milestone (delegated implementer + adversarial review gate), next-group (parallel milestone groups), close-milestone, hotfix, replan, milestone-status, plus per-stack reference skills.",
       "source": "./plugins/milestone-loop",
-      "version": "0.7.0"
+      "version": "0.8.0"
     }
   ]
 }
