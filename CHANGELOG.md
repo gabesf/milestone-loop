@@ -3,6 +3,15 @@
 All notable changes to this project are listed here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `measure-sessions.py`: each line records `gate_min`, the clock time from
+  the last implementer's end to the hand-over (verification, gate, fixes
+  and tier 1), and `/milestone-status` shows it, so the gate can be
+  compared across releases. Baseline in `docs/measurements.md`.
+
 ## [0.9.0] - 2026-10-09
 
 ### Changed

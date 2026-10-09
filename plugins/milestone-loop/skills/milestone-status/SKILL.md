@@ -88,9 +88,11 @@ If none exist, say "No notes between milestones."
 ### 5. Trend
 
 If `docs/metrics.jsonl` exists (written by `/close-milestone`), show its
-last 5 lines as a table: milestone, date, wait on the user, implementer
-active minutes (`implementer` + `fix`), implementer calls, capture
-minutes, AskUserQuestion calls, largest context. One line under it says
+last 5 lines as a table: milestone, date, gate on the clock (`gate_min`:
+from the last implementer's end to the hand-over; blank on older lines),
+wait on the user, implementer active minutes (`implementer` + `fix`),
+implementer calls, capture minutes, AskUserQuestion calls, largest
+context. One line under it says
 what moved most against the previous rows. No file: skip the section.
 
 ### 6. Other handoffs

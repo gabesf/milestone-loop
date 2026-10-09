@@ -22,7 +22,10 @@ Usage:
       newest session instead. The line records `until`, its newest event; the
       next unit's line counts only what happened after that `until`, so a
       session that ran two units is split between them, and one that only
-      talked after the previous close is left out.
+      talked after the previous close is left out. `gate_min` is the clock
+      time from the last implementer's end to the hand-over (the first turn
+      handed back to the user while no subagent runs): verification, gate,
+      fixes and tier 1; null when no implementer ran.
 Subagent roles come from their descriptions, which the workflow starts with
 the unit and the role ("M-07 implementer", "M-07 review: bugs", ...).
 Transcripts live in $CLAUDE_CONFIG_DIR/projects (default ~/.claude/projects);
@@ -182,12 +185,22 @@ def analyze(path, main, since=0, busy=()):
                     images += sum(1 for y in blk['content'] if y.get('type') == 'image')
     if not calls:
         return None
+    # Main transcript: when the orchestrator ended a turn and the user wrote next.
+    turn_ends = []
+    prev = None
+    for x in events:
+        if x.get('type') not in ('user', 'assistant', 'queue-operation'):
+            continue
+        if (main and prev is not None and prev.get('type') == 'assistant' and x.get('type') == 'user'
+                and not x.get('isMeta') and text_of((x.get('message') or {}).get('content')).strip()):
+            turn_ends.append(ts(prev['timestamp']))
+        prev = x
     ctx = list(calls.values())
     wall = ts(events[-1]['timestamp']) - ts(events[0]['timestamp'])
     return dict(start=ts(events[0]['timestamp']), wall=wall, active=wall - sum(waits.values()),
                 waits=dict(waits), steps=len(ctx), ctx_avg=sum(ctx) / len(ctx), ctx_max=max(ctx),
                 tools=dict(tools), images=images, questions=questions, model=model.replace('claude-', ''),
-                clipped=clipped)
+                clipped=clipped, turn_ends=turn_ends)
 
 
 def session(base, sid, since=0):
@@ -215,10 +228,17 @@ def jsonl_line(milestone, sessions):
         by_role[s['role']].append(s)
     impl = by_role['implementer'] + by_role['fix']
     wait = lambda k: sum(m['waits'].get(k, 0) for m in mains)
+    # Gate on the clock: from the last implementer's end to the hand-over, the first turn
+    # handed back to the user while no subagent runs (verification, gate, fixes, tier 1).
+    built = max((s['start'] + s['wall'] for s in by_role['implementer']), default=None)
+    busy = [(s['start'], s['start'] + s['wall']) for s in subs]
+    handover = min((t for m in mains for t in m['turn_ends']
+                    if built is not None and t >= built and not covered(t, t + 1, busy)), default=None)
     return json.dumps(dict(
         milestone=milestone, sessions=[sid[:8] for sid, _, _ in sessions],
         date=datetime.fromtimestamp(min(m['start'] for m in mains)).strftime('%Y-%m-%d'),
         model=mains[-1]['model'], wall_min=mins(sum(m['wall'] for m in mains)),
+        gate_min=mins(handover - built) if handover is not None else None,
         orchestrator_active_min=mins(sum(m['active'] for m in mains)),
         wait_user_min=mins(wait('user')), wait_subagents_min=mins(wait('subagents')),
         sleep_min=mins(wait('sleep') + sum(s['waits'].get('sleep', 0) for s in subs)),

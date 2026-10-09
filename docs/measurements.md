@@ -56,10 +56,22 @@ What the numbers say:
 - **The close asked for the green light twice.** The user had run `/close-milestone` or said "go"; the skill asked again. Cost: 24 min (M-57), 41.5 min (G-13), 932 min overnight (M-63).
 - **The metrics overstated waits on the user.** A wait ended by a subagent's report was counted as the user's when an attachment line came first, and the user's messages while implementers ran counted as waits: 100 of M-58's 114 user minutes. M-63's line also repeated G-13's numbers, because both ran in one session.
 
-## Targets for the next release
+From 0.9.1, each line of `docs/metrics.jsonl` records `gate_min`: the clock
+time from the last implementer's end to the hand-over (the first turn handed
+back to the user while no subagent runs), so verification, gate, fixes and
+tier 1. The same rule on the units above, as the baseline to compare with:
+
+| Unit | `gate_min` |
+|---|---|
+| M-57 | 30.4 |
+| G-13 | 92.7 |
+| M-58 | 91.0 |
+| M-63 (`Size: S`) | 29.3 |
+
+## Targets for 0.9
 
 | Metric | Target |
 |---|---|
-| Gate plus tier 1 on the clock, full gate | −25 % (lenses rebalanced, bugs lens split for multi-implementer diffs, tier 1 alongside) |
+| `gate_min`, full gate | −25 % against the baseline above (lenses rebalanced, bugs lens split for multi-implementer diffs, tier 1 alongside) |
 | Waits on the user at close | one step: running `/close-milestone` |
 | Decisions holding a session overnight | none with a recommended option and a local effect |
