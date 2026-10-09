@@ -1,7 +1,7 @@
 {
   "name": "milestone-loop",
   "description": "Milestone workflow skills: app-overview, plan-milestones, find-parallel, next-milestone (implementation delegated to a subagent, then an automatic adversarial review gate before user testing), next-group (independent milestones implemented in parallel, tested together with one short script), close-milestone, hotfix, replan, milestone-status, plus non-invocable reference skills the workflow skills read: conventions (stack loading, language and labels, model tiers, parallel groups, integration branch, git safety) and per-stack rules (stack-web, stack-unity, stack-mechanical, stack-electronics, with physical-build shared by the physical stacks; a project may list several stacks).",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": {
     "name": "Gabriel Sffair"
   },
