@@ -69,7 +69,9 @@ milestone status and never expands scope beyond the reported bug.
    agent (`model` = the standard tier's model, conventions "Model tiers")
    against the hotfix diff (`git diff` from the integration branch's
    pre-fix state to the working tree). Assign the **bugs & correctness**
-   lens. Pass the agent:
+   lens plus the regression check the full gate gives the leftovers lens
+   (every caller of a function the fix changes still works): this one
+   reviewer covers both. Pass the agent:
    - The diff.
    - The acceptance criteria for this fix: a one-line statement of the bug
      being fixed and the expected correct behavior after the fix.

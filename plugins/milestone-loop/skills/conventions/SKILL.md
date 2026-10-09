@@ -98,18 +98,29 @@ Applies to every message a workflow skill shows the user.
   decided on the user's behalf, what needs the user (or "nothing"), and
   what comes next. Many users read only this block, so it stands on its
   own.
-- **Decide what is reversible.** Ask only about a decision that is hard to
-  undo, or one with no option you can recommend. When an option can be
-  recommended and a wrong choice is cheap to undo (a value, a placement, a
-  wording, a visual detail), apply it, record it under the handoff's
-  "Decisions made" marked `(on the user's behalf)` (it reaches Deviations
-  at close), list it in the
-  closing block, and carry on: the user overrides it while testing. An
-  open question holds the whole session, overnight if nobody is there.
+- **Decide what stays local.** Ask only about a decision with no option
+  you can recommend, or one whose effect leaves this machine before the
+  user tests (a push, `main`, a deploy or publish, a message to other
+  people, a schema change on a shared database, deleting what git cannot
+  restore). Anything else is reversible, even when undoing it means
+  redoing work from the checkpoint (a long redo: next point): apply the
+  recommended option, record
+  it under the handoff's "Decisions made" marked `(on the user's behalf)`
+  (it reaches Deviations at close), list it in the closing block, and
+  carry on: the user overrides it while testing. An open question holds
+  the whole session, overnight if nobody is there.
+- **Long redo: ask, and keep working.** When a wrong choice would cost a
+  long redo (an implementer's whole run), ask in plain text —
+  `AskUserQuestion` blocks the session — and go on with whatever does not
+  depend on the answer. Once nothing else is left, give the user about 15
+  minutes (in Claude Code, a background `sleep 900`: its end wakes the
+  session); still no answer, apply the recommendation as above (none to
+  recommend: keep waiting). A later answer overrides it.
 - These stay questions: the workflow's gates (overview sign-off, plan
-  approval, the green light to close, anything that touches `main`), and
-  the one-time offers and setup questions (a migration, the milestone
-  archive, `Push:`, `Commit mode:`).
+  approval, the green light to close — given by running
+  `/close-milestone` —, anything that touches `main`), and the one-time
+  offers and setup questions (a migration, the milestone archive,
+  `Push:`, `Commit mode:`).
 
 ## Legacy projects
 
@@ -230,6 +241,7 @@ The light track:
 - **Gate.** `/hotfix`'s mini-gate (its step 6) replaces the full gate,
   with the reviewer also given the project's checkpoint checklist and told
   to flag scope creep. The review policy still decides whether it runs.
+  Tier 1 runs alongside it, as in the full gate.
 - **Testing.** No testing doc. Tier-1 results, the tier-2 steps (usually
   one or two) and the Self-report's unverified claims (as watch points,
   one line each) go in the hand-over message.

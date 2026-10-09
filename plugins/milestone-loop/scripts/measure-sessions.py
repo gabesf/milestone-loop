@@ -9,7 +9,9 @@ role, active minutes, model calls, context size, capture time and images.
   are de-duplicated by message id).
 - Active time = wall time minus waits longer than 5 minutes: on the user, on
   subagents, on the coordinator's next message (an agent resumed for fixes), and
-  on a sleeping machine (cut-off responses).
+  on a sleeping machine (cut-off responses). A wait is classified by the event
+  that ended it; while a subagent was still running, the session waited on it,
+  not on the user.
 - Context of a call = input + cache read + cache creation tokens.
 
 Usage:
@@ -17,7 +19,10 @@ Usage:
   measure-sessions.py <project dir> --jsonl --milestone M-07 --active-since <ISO time>
       prints one JSON line summing every session active since that time (what
       /close-milestone appends to docs/metrics.jsonl); --latest takes only the
-      newest session instead.
+      newest session instead. The line records `until`, its newest event; the
+      next unit's line counts only what happened after that `until`, so a
+      session that ran two units is split between them, and one that only
+      talked after the previous close is left out.
 Subagent roles come from their descriptions, which the workflow starts with
 the unit and the role ("M-07 implementer", "M-07 review: bugs", ...).
 Transcripts live in $CLAUDE_CONFIG_DIR/projects (default ~/.claude/projects);
@@ -83,42 +88,65 @@ def role_of(meta):
     return 'other'
 
 
-def analyze(path, main):
+def covered(t0, t1, spans):
+    """Seconds of [t0, t1] inside the union of the (start, end) spans."""
+    total, reached = 0.0, t0
+    for s, e in sorted(spans):
+        s, e = max(s, reached), min(e, t1)
+        if e > s:
+            total += e - s
+            reached = e
+    return total
+
+
+def analyze(path, main, since=0, busy=()):
+    """busy: (start, end) spans of this session's subagents, for the main transcript."""
     events = []
+    clipped = False
     with open(path) as f:
         for line in f:
             try:
                 x = json.loads(line)
             except ValueError:
                 continue
-            if 'timestamp' in x:
+            if 'timestamp' not in x:
+                continue
+            if ts(x['timestamp']) < since:
+                clipped = True
+            else:
                 events.append(x)
     if not events:
         return None
     events.sort(key=lambda x: x['timestamp'])
     waits = defaultdict(float)
-    for a, b in zip(events, events[1:]):
+    for i, (a, b) in enumerate(zip(events, events[1:])):
         gap = ts(b['timestamp']) - ts(a['timestamp'])
         if gap <= IDLE:
             continue
-        tb = text_of((b.get('message') or {}).get('content') or b.get('content'))
+        # Attachments and system lines are written just ahead of what ended the wait.
+        end = next((e for e in events[i + 1:] if e.get('type') in ('user', 'assistant', 'queue-operation')), b)
+        tb = text_of((end.get('message') or {}).get('content') or end.get('content'))
         pending = [blk['name'] for blk in ((a.get('message') or {}).get('content') or [])
                    if a.get('type') == 'assistant' and isinstance(blk, dict) and blk.get('type') == 'tool_use']
         if 'cut off mid-stream' in tb or 'went to sleep' in tb:
-            waits['sleep'] += gap
+            kind = 'sleep'
         elif 'coordinator sent a message' in tb:
-            waits['coordinator'] += gap
+            kind = 'coordinator'
         elif 'AskUserQuestion' in pending:
-            waits['user'] += gap
+            kind = 'user'
         elif main and ('Agent' in pending or 'Task' in pending
                        or tb.startswith(('<task-notification', '<agent-message'))):
-            waits['subagents'] += gap
+            kind = 'subagents'
         elif pending:
             continue  # a long tool call is work
-        elif main:
-            waits['user'] += gap  # an idle orchestrator waits on the user
         else:
-            waits['other'] += gap
+            kind = 'user' if main else 'other'  # an idle orchestrator waits on the user
+        if kind == 'user':
+            # The user may talk while background subagents work; that time is theirs.
+            on_subagents = covered(ts(a['timestamp']), ts(b['timestamp']), busy)
+            waits['subagents'] += on_subagents
+            gap -= on_subagents
+        waits[kind] += gap
     calls = {}
     uses = {}
     tools = defaultdict(float)
@@ -158,21 +186,22 @@ def analyze(path, main):
     wall = ts(events[-1]['timestamp']) - ts(events[0]['timestamp'])
     return dict(start=ts(events[0]['timestamp']), wall=wall, active=wall - sum(waits.values()),
                 waits=dict(waits), steps=len(ctx), ctx_avg=sum(ctx) / len(ctx), ctx_max=max(ctx),
-                tools=dict(tools), images=images, questions=questions, model=model.replace('claude-', ''))
+                tools=dict(tools), images=images, questions=questions, model=model.replace('claude-', ''),
+                clipped=clipped)
 
 
-def session(base, sid):
-    main = analyze(f'{base}/{sid}.jsonl', True)
-    if not main:
-        return None, []
+def session(base, sid, since=0):
     subs = []
     for sf in glob.glob(f'{base}/{sid}/subagents/*.jsonl'):
         mf = sf[:-6] + '.meta.json'
         meta = json.load(open(mf)) if os.path.exists(mf) else {}
-        s = analyze(sf, False)
+        s = analyze(sf, False, since)
         if s:
             s.update(role=role_of(meta), desc=meta.get('description', ''))
             subs.append(s)
+    main = analyze(f'{base}/{sid}.jsonl', True, since, [(s['start'], s['start'] + s['wall']) for s in subs])
+    if not main:
+        return None, []
     return main, sorted(subs, key=lambda s: s['start'])
 
 
@@ -199,7 +228,20 @@ def jsonl_line(milestone, sessions):
         max_context_k=round(max(m['ctx_max'] for m in mains + subs) / 1000),
         capture_min=mins(sum(s['tools'].get('capture', 0) for s in subs)), images=sum(s['images'] for s in subs),
         ask_user_calls=sum(m['questions'] for m in mains),
+        until=datetime.fromtimestamp(max(m['start'] + m['wall'] for m in mains)).astimezone()
+        .isoformat(timespec='seconds'),
     ), ensure_ascii=False)
+
+
+def last_until(project, milestone):
+    """Where the previous unit ended: the `until` of the last line in docs/metrics.jsonl
+    for another unit (a close that is re-run measures its own unit again)."""
+    try:
+        with open(os.path.join(project, 'docs', 'metrics.jsonl')) as f:
+            lines = [json.loads(line) for line in f if line.strip()]
+        return parse_time([d for d in lines if d.get('milestone') != milestone][-1]['until'])
+    except (OSError, IndexError, KeyError, ValueError):
+        return 0
 
 
 def report(sid, main, subs):
@@ -241,6 +283,7 @@ def main():
         files = files[-1:]
     since = parse_time(a.since + ' 00:00:00 +0000' if a.since and len(a.since) == 10 else a.since) if a.since else 0
     active_since = parse_time(a.active_since) if a.active_since else None
+    after = last_until(a.project, a.milestone) if a.jsonl else 0
     picked = []
     for f in files:
         sid = os.path.basename(f)[:-6]
@@ -248,11 +291,13 @@ def main():
             continue
         if active_since is not None and os.path.getmtime(f) < active_since:
             continue
-        main_s, subs = session(base, sid)
+        main_s, subs = session(base, sid, after)
         if not main_s or main_s['start'] < since:
             continue
         if active_since is not None and main_s['start'] + main_s['wall'] < active_since:
             continue
+        if main_s['clipped'] and not subs:
+            continue  # began before the previous close and ran no agent since: talk after that close
         if not subs and main_s['steps'] < 20 and not (a.latest or a.jsonl):
             continue
         picked.append((sid, main_s, subs))

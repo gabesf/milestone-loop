@@ -183,8 +183,8 @@ the session metrics can tell them apart.
    on disjoint files) or when one returns partial work under context
    pressure; each later one gets the brief plus the updated "Done".
 3. **On BLOCKED:** decide it yourself when the conventions' "Talking to
-   the user" section allows (a recommended option, cheap to undo);
-   otherwise relay the question verbatim. Record the answer under
+   the user" section allows (a recommended option whose effect stays
+   local); otherwise relay the question verbatim. Record the answer under
    "Decisions made" (and in docs/decisions/ if it is a design change),
    then launch a fresh implementer from the current state.
 4. **On return:** verify (the rule above), then update "Done"/"Remaining"
@@ -253,17 +253,29 @@ informal reviews.
    session's reasoning,
    which the handoff file holds — and is told to ATTACK the change and
    not to open `docs/handoff/`. One lens each:
-   - **Bugs & correctness**: broken edge cases, violated invariants from
-     the systems docs, regressions of earlier milestones' behavior, skipped
-     error paths, swallowed exceptions, silent fallbacks that mask
-     failures.
+   - **Bugs & correctness**, in the diff's own logic: broken edge cases,
+     violated invariants from the systems docs, skipped error paths,
+     swallowed exceptions, silent fallbacks that mask failures.
    - **Overengineering & leftovers**: generality beyond the criteria, dead
      code, debug leftovers, TODOs, hard-coded values CLAUDE.md says must be
      configurable, and duplication — searching the EXISTING codebase for
-     logic the diff reimplements.
+     logic the diff reimplements. The same search covers regressions:
+     every caller of a function whose signature, return value or behavior
+     the diff changes, and earlier milestones' behavior.
    - **Scope & project-rule compliance**: scope creep, violations of
-     CLAUDE.md rules and decision records.
+     CLAUDE.md rules and decision records, and risky new logic (a branch,
+     a parser, money, security, data writes) without a test that fails
+     when it breaks.
+   The gate takes as long as its slowest reviewer, usually the bugs lens:
+   when several implementers built the milestone, split that lens between
+   two reviewers, each attacking half of the changed files (an
+   implementer's files stay together) with the whole diff for context.
    Each returns findings with file:line, severity and 0–100 confidence.
+   **Tier 1 runs alongside** (Closing steps 1–2, on this checkpoint):
+   launch it in the same message as the reviewers, or drive it yourself
+   while they work. A failed tier-1 step joins the findings in step 4.
+   Fixes wait until tier 1 has finished: it observes the running app, and
+   a fix would change what it observes.
 3. **Filter:** drop findings below 80 confidence, pre-existing issues,
    nitpicks, and anything a linter/compiler catches. Exception to the
    confidence cut only: a finding below 80 that names the same problem as
@@ -280,7 +292,8 @@ informal reviews.
    - docs and comments → real only when the text states something false
      about the code (leftovers such as TODOs and commented-out code stay
      the leftovers lens's job). Fix them in one batch, here or with the
-     next fix.
+     next fix;
+   - a failed tier-1 step → a bug, fixed in the same round.
    Fixes go to a fresh implementer (step 5 of "Delegated
    implementation") and must be MINIMAL: reviewers invent
    hypotheticals by design, and a fix more complex than the problem it
@@ -294,7 +307,9 @@ informal reviews.
    alone**):** ONE fresh
    `adversarial-reviewer` (same model and fallback) on
    the fix diff (`git diff HEAD -- . ':!docs/handoff'`), asking whether
-   the fixes added defects or bloat. Same filter; fix what survives;
+   the fixes added defects or bloat. Meanwhile, re-run the tier-1 steps
+   that exercise code the fixes touched, plus every step that failed; the
+   other results stand. Same filter; fix what survives;
    verify again. **Hard cap: two rounds.** Anything a later look would
    find goes to the milestone's Notes — past two passes, review starts
    inventing bugs.
@@ -342,7 +357,9 @@ filling up, external blocker, user-requested pause):
 ## Closing — handing over for manual testing
 
 Once the gate is passed and verified green (under `Size: S`, the light
-track's Testing rule replaces the testing doc):
+track's Testing rule replaces the testing doc). Steps 1–2 ran alongside
+the gate; when the policy skipped it, run them now. The testing doc's
+Watch points come from the gate's triage:
 
 1. **Write `docs/testing/M-XX.md`** in two tiers. The agent does
    everything it possibly can; the user does only what is impossible for
@@ -366,7 +383,7 @@ track's Testing rule replaces the testing doc):
    - Any section the stack reference's `next-milestone / testing doc`
      section adds, and any testing rule in the project's
      `docs/guidelines/checkpoint-checklist.md`.
-2. **Execute tier 1 now**, against the real running app — the environment
+2. **Execute tier 1**, against the real running app — the environment
    the user would test in (the deploy, or the Editor/build they'd open).
    Not optional, not a dry run.
    - Possible for the agent: anything drivable through the harness's tools.
@@ -386,7 +403,8 @@ track's Testing rule replaces the testing doc):
      actually couldn't.
    - Record each result under "Verified by the agent": passed (what was
      observed) or FAILED. A failure is a bug, not a user step: delegate the
-     fix, verify, re-execute. Never hand the user a step you saw fail.
+     fix (with the gate's, when the gate runs), verify, re-execute. Never
+     hand the user a step you saw fail.
    - If a tier-1 step needs something only the user can grant (a browser
      permission, a tool the stack reference requires, a token), ask in one
      line and continue once it's there — never demote the step to avoid
@@ -398,8 +416,9 @@ track's Testing rule replaces the testing doc):
    the Self-report left unverified and which step covers it. Details stay
    in the testing doc. Add any reminder the stack reference's testing-doc
    section asks for, then the closing block (conventions, "Talking to the
-   user"). Then STOP: no further commits, never push, don't start the
-   next milestone.
+   user"), whose "needs you" line reads: test, then report what you found
+   here, or run `/close-milestone` — running it is the green light. Then
+   STOP: no further commits, never push, don't start the next milestone.
 4. **Triage the user's comments** together (plus the stack reference's
    `next-milestone / feedback triage` section, if it has one):
    - **Covered by a future milestone** → confirm the M-ID, note it in that
@@ -408,5 +427,6 @@ track's Testing rule replaces the testing doc):
      exception), verify, update the testing doc if steps changed.
    - **Design change** → stop implementing; update docs/milestones.md and
      add a decision record BEFORE any further code. Code follows docs.
-5. Only after the user's explicit green light, direct them to
-   `/close-milestone`.
+5. After any fixes, hand over again as in step 3, with only what changed.
+   A green light given in chat gets one line: run `/close-milestone`,
+   which only the user can start.

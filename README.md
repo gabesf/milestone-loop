@@ -21,16 +21,20 @@ each one through the same loop:
   attack the milestone's diff, one lens each: bugs and correctness,
   overengineering and leftovers, scope and project-rule compliance. They
   get the diff, the acceptance criteria and CLAUDE.md, never the author's
-  reasoning. Surviving findings are fixed; a second round runs only when
-  the fixes changed runtime code. At planning time you choose whether the
-  gate runs on every milestone (the default), only on tagged ones, or on
-  none.
+  reasoning. The agent-run tests run alongside them, and their failures
+  are fixed in the same round as the surviving findings; a second round
+  runs only when the fixes changed runtime code. At planning time you
+  choose whether the gate runs on every milestone (the default), only on
+  tagged ones, or on none.
 - **Small changes stay small.** A milestone tagged `Size: S` (one
   behavior, a few files) runs a light track: behavior-only criteria, one
   reviewer, at most one capture, no testing doc.
 - **Short messages.** Every step ends with a block of at most five lines:
-  what was decided for you, what needs you, what comes next. Choices that
-  are cheap to undo are made and listed, not asked.
+  what was decided for you, what needs you, what comes next. Choices whose
+  effect stays on your machine until you test are made and listed, not
+  asked; a question you must answer doesn't stop the work that doesn't
+  depend on it. Running `/close-milestone` is your green light, so closing
+  takes one step.
 - **Two-tier testing.** The agent drives every test step it can (browser,
   API, database, stack tooling) and records what it observed. You get only
   the steps that need a human: a real device, a physical action, a

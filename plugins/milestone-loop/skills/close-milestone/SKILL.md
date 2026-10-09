@@ -33,11 +33,12 @@ the second human gate of the workflow. The whole close runs in this session.
    this skill's base directory, or the `conventions` skill by name on hosts
    that don't state it. Run its "Legacy check" now. Its "Integration
    branch" and "Git safety" sections bind every git command below.
-3. Confirm explicitly: "Have you tested M-XX and do you approve closing
-   it?" (group mode: name the group and every member). A green light
-   given earlier in this same session counts; a green light assumed from
-   context does not. Then run the conventions' **branch
-   check**.
+3. **The user running this skill is the green light**: only the user can
+   start it, and the hand-over said so. Don't ask again. Ask only when the
+   message that started it reports a problem from testing (triage it
+   first, as `/next-milestone` Closing 4 says), or when this session
+   holds the user's test feedback still untriaged. Then run the
+   conventions' **branch check**.
 4. Load the stack reference as the conventions' "Stack reference" section
    says; its `close-milestone` section holds pre-commit checks (step 3 of
    "Close").

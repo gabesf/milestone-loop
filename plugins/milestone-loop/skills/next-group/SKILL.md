@@ -256,7 +256,10 @@ Each member was verified alone; their combination has never been built.
    which member, the members' acceptance criteria, CLAUDE.md, and the
    checkpoint checklist if the project has one. Same
    filter as the gate; minimal fixes, committed as `wip(M-XX):
-   integration fix`; one round.
+   integration fix`; one round. It runs alongside tier 1 (Testing step
+   1), launched in the same message as the testers; its fixes wait for
+   them and join their failed steps in one fix round, after which the
+   tier-1 steps that exercise the fixed code run again.
 3. Update `docs/handoff/G-XX.md` (Integration, Next step). **Context
    seam:** all code is committed at this point, and "Gate results" holds
    what testing needs. If this session's context is already heavy, commit
@@ -272,8 +275,9 @@ testing doc is `docs/testing/G-XX.md`; the watch points come from "Gate
 results".
 
 1. **Tier 1 has no cap.** For each member, one tester subagent on the
-   standard tier's model. Testers run at the same time when each can drive
-   its own browser (a headless browser through the project's harness, on
+   standard tier's model, launched together with the integration review
+   when it applies (Integration check step 2). Testers run at the same
+   time when each can drive its own browser (a headless browser through the project's harness, on
    a port this session assigns to its member); one at a time when the
    stack has a single runtime (one Editor, one device, the user's own
    browser). It gets the member's tier-1 steps, its criteria, the
@@ -312,8 +316,10 @@ results".
    commits are named `wip(M-XX): fix — [what]`. One more outcome: the
    user won't approve a member now → drop it ("Drop a member") and
    continue with the rest.
-6. Only after the user's green light for the group, direct them to
-   `/close-milestone`.
+6. The hand-over's "needs you" line reads: test, then report what you
+   found here, or run `/close-milestone` — running it is the green light
+   for the group. A green light given in chat gets one line pointing to
+   it.
 
 ## Drop a member
 

@@ -3,6 +3,42 @@
 All notable changes to this project are listed here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Review gate: the lenses are rebalanced, since the gate lasts as long
+  as its slowest reviewer (the bugs lens, 2–3× the others). Regressions
+  (callers of changed functions, earlier milestones' behavior) move to
+  the overengineering lens, which already searches the codebase; risky
+  logic without a test that fails when it breaks becomes a finding of
+  the scope & rules lens. When several implementers built a milestone,
+  the bugs lens is split between two reviewers by files. `/hotfix`'s
+  single reviewer covers bugs and regressions. Figures in
+  `docs/measurements.md`.
+- Tier 1 (the agent-run tests) runs alongside the gate on the checkpoint,
+  in `/next-milestone`, the `Size: S` light track and `/next-group`'s
+  integration review. Failed steps join the gate's fix round; after the
+  fixes, only the steps that exercise the fixed code run again.
+- Closing takes one step: running `/close-milestone` is the green light,
+  and the skill no longer asks again. The hand-over says so.
+- Conventions, "Talking to the user": a decision with a recommended
+  option is made on the user's behalf whenever its effect stays on this
+  machine until the user tests, even when undoing it means redoing work.
+  When a wrong choice would cost a long redo, the question is asked in
+  plain text and the work that doesn't depend on it goes on; with
+  nothing left, the session waits about 15 minutes, then applies the
+  recommendation.
+
+### Fixed
+
+- `measure-sessions.py`: a wait is classified by the event that ended it
+  (attachment lines written first no longer turn a subagent's report into
+  a wait on the user), and time while a subagent was running counts as a
+  wait on subagents even when the user wrote meanwhile. Each line records
+  `until`; the next one counts only what came after it, so a session that
+  ran two units no longer reports the first one twice.
+
 ## [0.8.0] - 2026-10-05
 
 ### Added

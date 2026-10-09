@@ -34,3 +34,32 @@ What the numbers say:
 | Capture time per implementer | −50 % |
 | AskUserQuestion calls after plan approval | ≤ 1 per milestone |
 | Largest context of any agent | < 300k |
+
+## After 0.8.0: the gate and the waits (2026-10-08)
+
+Four units on Subway Surfer (web) and Transformers Final Battle (Unity),
+read from the subagent timelines rather than from summed active time: the
+3 reviewers run in parallel, so G-13's 91 reviewer-minutes were about 36 on
+the clock.
+
+| Unit | Gate on the clock | Bugs lens | Other two lenses | Fixes and round 2 | Your test |
+|---|---|---|---|---|---|
+| M-57 | 27 min | 20.5 | 6.4 / 8.2 | none | 93 min (spike verdict) |
+| G-13 (M-61 path) | 57 min | 16.6 | 6.4 / 9.9 | 11.5 + 9.3 + 0.9, integration 12 | 12 min |
+| M-58 | 77 min | 32.7 | 12.2 / 13.0 | 19.9 + 9.1 + 8.8 | 14 min |
+| M-63 (`Size: S`) | 12.5 min, alongside tier 1 | 12.5 | — | — | 11 min |
+
+What the numbers say:
+
+- **The gate lasts as long as its slowest lens**, always the bugs lens, 2–3× the other two.
+- **Fixes changed runtime code in 3 of 4 full gates**, so a second round ran. Tier 1 ran after the gate, never alongside it.
+- **The close asked for the green light twice.** The user had run `/close-milestone` or said "go"; the skill asked again. Cost: 24 min (M-57), 41.5 min (G-13), 932 min overnight (M-63).
+- **The metrics overstated waits on the user.** A wait ended by a subagent's report was counted as the user's when an attachment line came first, and the user's messages while implementers ran counted as waits: 100 of M-58's 114 user minutes. M-63's line also repeated G-13's numbers, because both ran in one session.
+
+## Targets for the next release
+
+| Metric | Target |
+|---|---|
+| Gate plus tier 1 on the clock, full gate | −25 % (lenses rebalanced, bugs lens split for multi-implementer diffs, tier 1 alongside) |
+| Waits on the user at close | one step: running `/close-milestone` |
+| Decisions holding a session overnight | none with a recommended option and a local effect |
